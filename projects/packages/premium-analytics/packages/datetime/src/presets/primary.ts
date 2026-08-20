@@ -122,9 +122,9 @@ export const PRESET_DEFINITIONS: ReadonlyArray< PresetDefinition > = [
 		getShortLabel: () =>
 			/* translators: abbreviation for "7 days". Shown in a segmented control too narrow for the full label, so keep it as short as the language allows. */
 			_x( '7D', 'short date range preset', 'jetpack-premium-analytics-pkg' ),
-		getRange: ( { initOfToday, endOfYesterday } ) => ( {
-			from: subDays( initOfToday, 7 ),
-			to: endOfYesterday,
+		getRange: ( { initOfToday, endOfToday } ) => ( {
+			from: subDays( initOfToday, 6 ),
+			to: endOfToday,
 		} ),
 	},
 	{
@@ -135,9 +135,9 @@ export const PRESET_DEFINITIONS: ReadonlyArray< PresetDefinition > = [
 		getShortLabel: () =>
 			/* translators: abbreviation for "30 days". Shown in a segmented control too narrow for the full label, so keep it as short as the language allows. */
 			_x( '30D', 'short date range preset', 'jetpack-premium-analytics-pkg' ),
-		getRange: ( { initOfToday, endOfYesterday } ) => ( {
-			from: subDays( initOfToday, 30 ),
-			to: endOfYesterday,
+		getRange: ( { initOfToday, endOfToday } ) => ( {
+			from: subDays( initOfToday, 29 ),
+			to: endOfToday,
 		} ),
 	},
 	{
@@ -167,14 +167,16 @@ export const PRESET_DEFINITIONS: ReadonlyArray< PresetDefinition > = [
 	{
 		id: PRESET_LAST_12_MONTHS,
 		getLabel: () =>
-			/* translators: Rolling date-range preset pill. The last 12 months; keep it short. */
+			/* translators: Date-range preset pill. The last 12 months; keep it short. */
 			__( '12 months', 'jetpack-premium-analytics-pkg' ),
 		getShortLabel: () =>
 			/* translators: abbreviation for "12 months". Shown in a segmented control too narrow for the full label, so keep it as short as the language allows. */
 			_x( '12M', 'short date range preset', 'jetpack-premium-analytics-pkg' ),
-		getRange: ( { initOfToday, endOfYesterday } ) => ( {
-			from: subMonths( initOfToday, 12 ),
-			to: endOfYesterday,
+		// The chart buckets this preset by month, so a mid-month start would split
+		// the current month across a partial bucket at each end.
+		getRange: ( { initOfToday, endOfToday } ) => ( {
+			from: startOfMonth( subMonths( initOfToday, 11 ) ),
+			to: endOfToday,
 		} ),
 	},
 	{
