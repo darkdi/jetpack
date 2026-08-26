@@ -2,6 +2,7 @@
  * External dependencies
  */
 import {
+	completeToDateRange,
 	getComparisonPresetLabel,
 	getDateRangeSpan,
 	isYearSurfacePresetId,
@@ -33,8 +34,9 @@ type SectionSubtitleArgs = {
 	comparisonRange?: DateRange;
 
 	/**
-	 * The applied primary preset. Only read to recognise the year surface,
-	 * whose length is not a property of the selection.
+	 * The applied primary preset. Read to recognise the year surface, whose
+	 * length is not a property of the selection, and the to-date presets,
+	 * whose length is that of their completed window.
 	 */
 	presetId?: PrimaryPresetId;
 
@@ -104,7 +106,9 @@ function getIntervalCadenceLabel( interval: IntervalType ): string {
 /**
  * Describe the applied date configuration for a section header subtitle.
  * Reads the applied range, not the preset — except the year surface, whose
- * length reflects today's date, not the selection, so it states none.
+ * length reflects today's date, not the selection, so it states none. The
+ * 12-month preset has the same shape but keeps its length: it is measured on
+ * its completed window, so it reads as 12 months on every day of the month.
  *
  * @return The subtitle, or undefined when the range is incomplete.
  */
@@ -121,13 +125,17 @@ export function getSectionSubtitle( {
 	 * still-running year that unit changes by the day.
 	 */
 	const isYearSurface = isYearSurfacePresetId( presetId );
+
 	const rangeLabel = formatDateRangeLong( range, { calendarScale: isYearSurface } );
 
 	if ( ! rangeLabel ) {
 		return undefined;
 	}
 
-	const span = isYearSurface ? null : getDateRangeSpan( range );
+	// A to-date preset is measured on its completed window, so its length
+	// holds still instead of counting the days read so far.
+	const span =
+		isYearSurface || ! range ? null : getDateRangeSpan( completeToDateRange( range, presetId ) );
 
 	/*
 	 * The parenthetical holds how long the window is and how the charts bucket

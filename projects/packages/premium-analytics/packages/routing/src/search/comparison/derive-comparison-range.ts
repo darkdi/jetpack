@@ -8,6 +8,7 @@ import {
 } from '@jetpack-premium-analytics/data';
 import {
 	getComparisonRangeFromPreset,
+	isPrimaryPreset,
 	siteTimeZone,
 	type ComparisonPresetId,
 } from '@jetpack-premium-analytics/datetime';
@@ -40,7 +41,9 @@ const toComparisonPresetId = ( value?: string ): ComparisonPresetId | undefined 
 /**
  * Derive compare_from/compare_to for the main range + preset, in the site
  * timezone: day-aligned ranges get day-aligned comparisons, rolling windows
- * mirror the exact window. Returns ISO strings with the site offset.
+ * mirror the exact window. The primary preset travels along, so a to-date
+ * preset's previous period is its previous whole period rather than a day
+ * count. Returns ISO strings with the site offset.
  */
 export function deriveComparisonRange( opts: ReportParams ):
 	| {
@@ -74,7 +77,9 @@ export function deriveComparisonRange( opts: ReportParams ):
 		return undefined;
 	}
 
-	const cmp = getComparisonRangeFromPreset( reference, presetId );
+	const cmp = getComparisonRangeFromPreset( reference, presetId, {
+		primaryPresetId: isPrimaryPreset( opts.preset ) ? opts.preset : undefined,
+	} );
 	if ( ! cmp?.from || ! cmp?.to ) {
 		return undefined;
 	}

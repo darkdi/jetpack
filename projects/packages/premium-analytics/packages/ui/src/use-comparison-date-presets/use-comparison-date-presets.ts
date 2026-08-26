@@ -5,6 +5,7 @@ import {
 	getComparisonRangeFromPreset,
 	getComparisonPresetConfigs,
 	type ComparisonPresetId,
+	type PrimaryPresetId,
 } from '@jetpack-premium-analytics/datetime';
 import { useMemo } from 'react';
 /**
@@ -28,8 +29,16 @@ export type ComparisonDateRangePreset = {
 /**
  * Comparison presets derived from the primary range, dropping any the range
  * cannot support.
+ *
+ * @param referenceRange - The primary range.
+ * @param presetId       - The preset that produced it, so a to-date window
+ *                       compares with its previous whole period.
+ * @return The comparison presets, each with its range.
  */
-export function useComparisonDatePresets( referenceRange: DateRange ): ComparisonDateRangePreset[] {
+export function useComparisonDatePresets(
+	referenceRange: DateRange,
+	presetId?: PrimaryPresetId
+): ComparisonDateRangePreset[] {
 	return useMemo( () => {
 		if ( ! referenceRange.from || ! referenceRange.to ) {
 			return [];
@@ -37,9 +46,11 @@ export function useComparisonDatePresets( referenceRange: DateRange ): Compariso
 
 		return getComparisonPresetConfigs()
 			.map( ( { id, label, shortLabel } ) => {
-				const range = getComparisonRangeFromPreset( referenceRange, id );
+				const range = getComparisonRangeFromPreset( referenceRange, id, {
+					primaryPresetId: presetId,
+				} );
 				return range ? { id, label, shortLabel, range } : null;
 			} )
 			.filter( ( preset ): preset is ComparisonDateRangePreset => preset !== null );
-	}, [ referenceRange ] );
+	}, [ referenceRange, presetId ] );
 }

@@ -276,4 +276,45 @@ describe( 'getSectionSubtitle', () => {
 			).toBe( 'January 1 – July 31 (7 months)' );
 		} );
 	} );
+
+	describe( 'the 12-month preset', () => {
+		/*
+		 * `last-12-months` starts on the first of a month and ends at the end of
+		 * today, so the same selection measures differently by the day it is
+		 * read on. The preset holds its length and its calendar shape on all of
+		 * them.
+		 */
+		const READ_ON = [
+			[
+				'mid-month',
+				{ from: at( 2025, 9, 1 ), to: endOf( 2026, 8, 20 ) },
+				'September 1, 2025 – August 20, 2026',
+			],
+			[
+				'on the last day of a month',
+				{ from: at( 2025, 9, 1 ), to: endOf( 2026, 8, 31 ) },
+				'September 1, 2025 – August 31, 2026',
+			],
+			[
+				'on the first of a month',
+				{ from: at( 2025, 10, 1 ), to: endOf( 2026, 9, 1 ) },
+				'October 1, 2025 – September 1, 2026',
+			],
+		] as const;
+
+		it.each( READ_ON )( 'reads as twelve months when read %s', ( _label, range, dates ) => {
+			expect( getSectionSubtitle( { range, presetId: 'last-12-months', interval: 'month' } ) ).toBe(
+				`${ dates } (12 months, monthly)`
+			);
+		} );
+
+		it( 'still measures the same dates by the day under any other preset', () => {
+			expect(
+				getSectionSubtitle( {
+					range: { from: at( 2025, 9, 1 ), to: endOf( 2026, 8, 20 ) },
+					presetId: 'custom',
+				} )
+			).toBe( 'September 1, 2025 – August 20, 2026 (354 days)' );
+		} );
+	} );
 } );

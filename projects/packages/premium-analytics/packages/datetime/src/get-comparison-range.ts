@@ -15,6 +15,12 @@ import {
 	subMonths,
 	subYears,
 } from 'date-fns';
+/**
+ * Internal dependencies
+ */
+import { getDateRangeSpan } from './date-range-span';
+import { completeToDateRange } from './to-date-range';
+import type { PrimaryPresetId } from './presets/types';
 
 export type DateRange = { from?: Date; to?: Date };
 
@@ -55,27 +61,51 @@ function getInclusiveDayCount( from: Date, to: Date ): number {
 }
 
 /**
+ * Context the comparison is derived in.
+ */
+export type ComparisonRangeOptions = {
+	/**
+	 * The preset the reference range came from. A to-date preset is measured
+	 * by the day it is read on, so its previous period is taken from the
+	 * completed window: the twelve whole months before "12 months".
+	 */
+	primaryPresetId?: PrimaryPresetId;
+};
+
+/**
  * Returns a comparison DateRange derived from a reference range and a preset.
  *
  * - Day boundaries are resolved in the frame of the incoming dates; pass TZDate
  *   instances for site-local math.
  * - Whole months are detected from the range shape alone, so a rolling window
  *   that happens to land on one also compares calendar-to-calendar.
+ * - A `previous-period` reference measuring in whole months or years moves
+ *   back by calendar units too, the way the step arrows move it.
  *
  * @param reference - The reference range to compare against (must include both `from` and `to`).
  * @param presetId  - One of the supported preset identifiers.
+ * @param options   - The context the reference range was produced in.
  * @return A new DateRange for the comparison period, or `undefined` if inputs are invalid.
  */
 export function getComparisonRangeFromPreset(
 	reference: DateRange,
-	presetId: ComparisonPresetId
+	presetId: ComparisonPresetId,
+	options: ComparisonRangeOptions = {}
 ): DateRange | undefined {
 	if ( ! reference?.from || ! reference?.to ) {
 		return undefined;
 	}
 
-	const refFrom = reference.from;
-	const refTo = reference.to;
+	/*
+	 * Only the previous period reads a to-date preset's completed window. The
+	 * previous month and year shift the dates as read, so a to-date window
+	 * compares with the same days a month or a year earlier.
+	 */
+	const asRead = { from: reference.from, to: reference.to };
+	const { from: refFrom, to: refTo } =
+		presetId === COMPARISON_PREVIOUS_PERIOD
+			? completeToDateRange( asRead, options.primaryPresetId )
+			: asRead;
 
 	const isDayAligned =
 		refFrom.getTime() === startOfDay( refFrom ).getTime() &&
@@ -109,6 +139,19 @@ export function getComparisonRangeFromPreset(
 		bound === 1 ? endOfDay( startOfDay( date ) ) : startOfDay( date );
 
 	if ( presetId === COMPARISON_PREVIOUS_PERIOD ) {
+		const span = getDateRangeSpan( { from: refFrom, to: refTo } );
+
+		// Whole months and years move by calendar units: counted in days, the
+		// period before a leap year starts a day late.
+		if ( span?.unit === 'month' || span?.unit === 'year' ) {
+			const subtract = span.unit === 'month' ? subMonths : subYears;
+
+			return {
+				from: clampDayBound( subtract( refFrom, span.value ), 0 ),
+				to: clampDayBound( subDays( refFrom, 1 ), 1 ),
+			};
+		}
+
 		const daysInclusive = getInclusiveDayCount( refFrom, refTo );
 		return {
 			from: clampDayBound( subDays( refFrom, daysInclusive ), 0 ),

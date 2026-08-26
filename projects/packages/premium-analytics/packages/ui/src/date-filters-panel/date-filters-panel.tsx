@@ -223,10 +223,13 @@ export function DateFiltersPanel( {
 	 */
 	const [ isPrimaryPickerOpen, setIsPrimaryPickerOpen ] = useState( false );
 	const comparisonSourceRange = isPrimaryPickerOpen ? range : appliedRange ?? range;
+	const comparisonSourcePresetId =
+		isPrimaryPickerOpen || ! appliedRange ? validatedPresetId : validatedAppliedPresetId;
 
 	// Available comparison presets, derived from whichever primary range the
-	// picker is currently reflecting (draft while open, applied while closed).
-	const presets = useComparisonDatePresets( comparisonSourceRange );
+	// picker is currently reflecting (draft while open, applied while closed)
+	// and from its preset, which decides how a to-date window is measured.
+	const presets = useComparisonDatePresets( comparisonSourceRange, comparisonSourcePresetId );
 
 	const presetChange = useCallback(
 		( id: ComparisonPresetId ) => {
