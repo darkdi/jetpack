@@ -242,7 +242,7 @@ describe( 'DateFiltersPanel', () => {
 		expect( screen.queryByRole( 'button', { name: 'Custom' } ) ).not.toBeInTheDocument();
 	} );
 
-	it( 'derives the comparison of a to-date preset from its completed window', async () => {
+	it( 'steps the comparison of a to-date preset back by its completed window', async () => {
 		mockContainerResize();
 		const onComparisonChange = jest.fn();
 		const user = userEvent.setup();
@@ -264,7 +264,7 @@ describe( 'DateFiltersPanel', () => {
 		expect( onComparisonChange ).toHaveBeenCalledWith(
 			{
 				from: new Date( '2024-09-01T00:00:00.000Z' ),
-				to: new Date( '2025-08-31T23:59:59.999Z' ),
+				to: new Date( '2025-08-20T23:59:59.999Z' ),
 			},
 			'previous-period'
 		);

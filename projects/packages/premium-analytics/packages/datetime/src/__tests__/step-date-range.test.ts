@@ -6,7 +6,7 @@ import { differenceInCalendarDays } from 'date-fns';
 /**
  * Internal dependencies
  */
-import { canStepForward, stepDateRange } from '../step-date-range';
+import { canStepForward, stepDateRange, stepDateRangeBySpan } from '../step-date-range';
 import type { DateRange } from '../get-comparison-range';
 
 /**
@@ -211,5 +211,31 @@ describe( 'canStepForward', () => {
 
 	it( 'is false without an end to step from', () => {
 		expect( canStepForward( { from: at( 2026, 7, 14 ), to: undefined }, now ) ).toBe( false );
+	} );
+} );
+
+describe( 'stepDateRangeBySpan', () => {
+	// `last-12-months` as read on 20 August 2026: eleven whole months and the
+	// running one, which measures as 354 days on its own.
+	const toDate = wholeDays( at( 2025, 9, 1 ), at( 2026, 8, 20 ) );
+
+	it( 'moves a window by a span it does not measure itself', () => {
+		expect( stepDateRangeBySpan( toDate, 'previous', { unit: 'month', value: 12 } ) ).toEqual(
+			wholeDays( at( 2024, 9, 1 ), at( 2025, 8, 20 ) )
+		);
+	} );
+
+	it( 'falls back to days where the given span will not reverse', () => {
+		// Two months back from 31 January clamps to 30 November, so the step
+		// cannot be undone and the day count wins.
+		const clamping = wholeDays( at( 2026, 1, 31 ), at( 2026, 3, 30 ) );
+
+		expect( stepDateRangeBySpan( clamping, 'previous', { unit: 'month', value: 2 } ) ).toEqual(
+			wholeDays( at( 2025, 12, 3 ), at( 2026, 1, 30 ) )
+		);
+	} );
+
+	it( 'returns undefined without a span', () => {
+		expect( stepDateRangeBySpan( toDate, 'previous', null ) ).toBeUndefined();
 	} );
 } );

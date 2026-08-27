@@ -16,7 +16,7 @@ import {
 /**
  * Internal dependencies
  */
-import { getDateRangeSpan, type DateRangeSpanUnit } from './date-range-span';
+import { getDateRangeSpan, type DateRangeSpan, type DateRangeSpanUnit } from './date-range-span';
 import type { DateRange } from './get-comparison-range';
 
 /**
@@ -52,18 +52,25 @@ function shift( from: Date, to: Date, unit: DateRangeSpanUnit, amount: number ):
 }
 
 /**
- * Shift a range backward or forward by its own length.
+ * Shift a range backward or forward by a given length.
+ *
+ * The length is passed in rather than measured, so a to-date window can move
+ * by the span of the window it covers once its running unit closes.
  *
  * Falls back to the day count where a calendar step will not undo — `addMonths`
  * clamps a day the target month is too short for, and reversibility wins.
  *
  * @param range     - The window to move.
  * @param direction - Which way to move it.
- * @return The shifted range, or `undefined` when the range has no measurable span.
+ * @param span      - The length to move by.
+ * @return The shifted range, or `undefined` when the range or the span is missing.
  */
-export function stepDateRange( range: DateRange, direction: StepDirection ): DateRange | undefined {
+export function stepDateRangeBySpan(
+	range: DateRange,
+	direction: StepDirection,
+	span: DateRangeSpan | null
+): DateRange | undefined {
 	const { from, to } = range;
-	const span = getDateRangeSpan( range );
 
 	if ( ! from || ! to || ! span ) {
 		return undefined;
@@ -80,6 +87,18 @@ export function stepDateRange( range: DateRange, direction: StepDirection ): Dat
 	const days = differenceInCalendarDays( to, from ) + 1;
 
 	return shift( from, to, 'day', sign * days );
+}
+
+/**
+ * Shift a range backward or forward by its own length, measured from the range
+ * rather than from the preset that produced it.
+ *
+ * @param range     - The window to move.
+ * @param direction - Which way to move it.
+ * @return The shifted range, or `undefined` when the range has no measurable span.
+ */
+export function stepDateRange( range: DateRange, direction: StepDirection ): DateRange | undefined {
+	return stepDateRangeBySpan( range, direction, getDateRangeSpan( range ) );
 }
 
 /**

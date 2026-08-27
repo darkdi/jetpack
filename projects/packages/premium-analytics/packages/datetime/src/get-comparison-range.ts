@@ -19,6 +19,7 @@ import {
  * Internal dependencies
  */
 import { getDateRangeSpan } from './date-range-span';
+import { stepDateRangeBySpan } from './step-date-range';
 import { completeToDateRange } from './to-date-range';
 import type { PrimaryPresetId } from './presets/types';
 
@@ -66,8 +67,8 @@ function getInclusiveDayCount( from: Date, to: Date ): number {
 export type ComparisonRangeOptions = {
 	/**
 	 * The preset the reference range came from. A to-date preset is measured
-	 * by the day it is read on, so its previous period is taken from the
-	 * completed window: the twelve whole months before "12 months".
+	 * by the day it is read on, so its previous period steps by the length of
+	 * the completed window: "12 months" moves back twelve months, not 354 days.
 	 */
 	primaryPresetId?: PrimaryPresetId;
 };
@@ -79,8 +80,9 @@ export type ComparisonRangeOptions = {
  *   instances for site-local math.
  * - Whole months are detected from the range shape alone, so a rolling window
  *   that happens to land on one also compares calendar-to-calendar.
- * - A `previous-period` reference measuring in whole months or years moves
- *   back by calendar units too, the way the step arrows move it.
+ * - `previous-period` ends the day before the reference starts and moves the
+ *   way the step arrows move it; a reference still running stops as many days
+ *   short, so the two windows are the same length.
  *
  * @param reference - The reference range to compare against (must include both `from` and `to`).
  * @param presetId  - One of the supported preset identifiers.
@@ -96,16 +98,8 @@ export function getComparisonRangeFromPreset(
 		return undefined;
 	}
 
-	/*
-	 * Only the previous period reads a to-date preset's completed window. The
-	 * previous month and year shift the dates as read, so a to-date window
-	 * compares with the same days a month or a year earlier.
-	 */
-	const asRead = { from: reference.from, to: reference.to };
-	const { from: refFrom, to: refTo } =
-		presetId === COMPARISON_PREVIOUS_PERIOD
-			? completeToDateRange( asRead, options.primaryPresetId )
-			: asRead;
+	const refFrom = reference.from;
+	const refTo = reference.to;
 
 	const isDayAligned =
 		refFrom.getTime() === startOfDay( refFrom ).getTime() &&
@@ -139,23 +133,33 @@ export function getComparisonRangeFromPreset(
 		bound === 1 ? endOfDay( startOfDay( date ) ) : startOfDay( date );
 
 	if ( presetId === COMPARISON_PREVIOUS_PERIOD ) {
-		const span = getDateRangeSpan( { from: refFrom, to: refTo } );
+		// Measured on the window a to-date preset covers once its running unit
+		// closes, so "12 months" steps back twelve months rather than 354 days.
+		const completed = completeToDateRange( { from: refFrom, to: refTo }, options.primaryPresetId );
+		const completedTo = completed.to ?? refTo;
 
-		// Whole months and years move by calendar units: counted in days, the
-		// period before a leap year starts a day late.
-		if ( span?.unit === 'month' || span?.unit === 'year' ) {
-			const subtract = span.unit === 'month' ? subMonths : subYears;
+		// The start moves the way the step arrows move it, so the arrows and
+		// the comparison never name windows of different lengths: by calendar
+		// units where they reverse, by days where a short month clamps them.
+		const previous = stepDateRangeBySpan(
+			{ from: refFrom, to: completedTo },
+			'previous',
+			getDateRangeSpan( { from: refFrom, to: completedTo } )
+		);
 
-			return {
-				from: clampDayBound( subtract( refFrom, span.value ), 0 ),
-				to: clampDayBound( subDays( refFrom, 1 ), 1 ),
-			};
+		if ( ! previous?.from ) {
+			return undefined;
 		}
 
-		const daysInclusive = getInclusiveDayCount( refFrom, refTo );
+		// The previous period ends the day before the reference starts, and
+		// stops as many days short as the reference itself does. A window still
+		// running compares with one of its own length, not with the whole
+		// period it sits in.
+		const daysStillToRun = differenceInDays( completedTo, refTo );
+
 		return {
-			from: clampDayBound( subDays( refFrom, daysInclusive ), 0 ),
-			to: clampDayBound( subDays( refTo, daysInclusive ), 1 ),
+			from: clampDayBound( previous.from, 0 ),
+			to: clampDayBound( subDays( refFrom, 1 + daysStillToRun ), 1 ),
 		};
 	}
 
