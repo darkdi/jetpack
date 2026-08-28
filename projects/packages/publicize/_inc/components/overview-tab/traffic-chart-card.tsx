@@ -85,8 +85,8 @@ export default function TrafficChartCard(): JSX.Element {
 	);
 
 	// Simple sites can't buy the standalone Jetpack Social plan, so they go to the
-	// WordPress.com plans page instead. `refresh_plan_data` is deliberately absent
-	// there: it exists to resync Jetpack's cached plan blob, which WPCOM never reads.
+	// WordPress.com plans page. No `refresh_plan_data`: that resyncs Jetpack's cached
+	// plan blob, which WPCOM never reads.
 	const upgradeUrl = useMemo( () => {
 		const simpleSiteUrl = getSimpleSiteUpgradeUrl(
 			features.ENHANCED_PUBLISHING,
@@ -107,8 +107,8 @@ export default function TrafficChartCard(): JSX.Element {
 		} );
 	}, [] );
 
-	// Only Simple sites know which plan they need; everywhere else the redirect
-	// service picks the product, so the copy stays plan-agnostic.
+	// Only Simple sites know which plan they need, so elsewhere the copy stays
+	// plan-agnostic.
 	const planName = getUpgradePlanName();
 	const genericUpgradeText = __(
 		'Upgrade to see which social networks are driving visits to your site, day by day.',

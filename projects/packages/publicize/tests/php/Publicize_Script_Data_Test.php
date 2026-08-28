@@ -18,8 +18,8 @@ use WorDBless\BaseTestCase;
 class Publicize_Script_Data_Test extends BaseTestCase {
 
 	/**
-	 * Reset the plan state between tests. Current_Plan caches the active plan in a
-	 * private static for the duration of a request, which outlives a single test.
+	 * Reset the plan state between tests: Current_Plan caches it in a private static
+	 * that outlives one test.
 	 */
 	public function set_up() {
 		parent::set_up();
@@ -27,14 +27,14 @@ class Publicize_Script_Data_Test extends BaseTestCase {
 		delete_option( 'jetpack_active_plan' );
 		$this->reset_plan_cache();
 
-		// A plan lookup should never reach the network from a unit test; fail loudly
-		// rather than silently returning a null plan name if one is ever attempted.
+		// Fail loudly rather than silently returning a null plan name if a lookup
+		// ever reaches the network.
 		add_filter( 'pre_http_request', array( $this, 'block_http' ), 10, 3 );
 	}
 
 	/**
-	 * Clear constants and plan state so tests don't leak into each other. IS_WPCOM in
-	 * particular flips Publicize_Utils::is_wpcom() for every later test in the run.
+	 * Clear constants and plan state between tests. IS_WPCOM in particular flips
+	 * `Publicize_Utils::is_wpcom()` for the rest of the run.
 	 */
 	public function tear_down() {
 		remove_filter( 'pre_http_request', array( $this, 'block_http' ), 10 );
@@ -90,7 +90,7 @@ class Publicize_Script_Data_Test extends BaseTestCase {
 
 	/**
 	 * Self-hosted and WoA sites upgrade through the Jetpack redirect service, which
-	 * resolves the product itself — no plan needs naming here.
+	 * resolves the product itself.
 	 */
 	public function test_no_upgrade_data_for_non_simple_sites() {
 		$this->assertNull( Publicize_Script_Data::get_upgrade_data() );
@@ -110,8 +110,7 @@ class Publicize_Script_Data_Test extends BaseTestCase {
 	}
 
 	/**
-	 * Nothing to upsell once the site already has the feature — and skipping the
-	 * payload also skips the plan lookup it would otherwise cost.
+	 * Nothing to upsell once the site already has the feature.
 	 */
 	public function test_no_upgrade_data_when_the_site_already_has_the_feature() {
 		$this->make_simple_site();
