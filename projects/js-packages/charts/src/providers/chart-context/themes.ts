@@ -19,8 +19,6 @@ const defaultTheme: CompleteChartTheme = {
 		strokeWidth: 1,
 	},
 	tickLength: 4,
-	gridColor: '',
-	gridColorDark: '',
 	xTickLineStyles: {
 		stroke: 'var(--a8c-charts-color-tick, #dbdbdb)',
 		strokeWidth: 1,

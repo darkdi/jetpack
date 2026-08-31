@@ -35,8 +35,11 @@ export const useXYChartTheme = ( data: SeriesData[] ) => {
 		const htmlLabelColor = resolveColor( theme.svgLabelSmall?.fill );
 
 		// The grid, axis, tick and label colors are spread through untouched, and that is the whole mechanism: visx writes each one onto the element it paints — as an inline style for the grid, a presentation attribute elsewhere — and a `var()` chain resolves there natively. So the role is read at the painted element rather than snapshot at the provider wrapper, which is what makes an override on a chart's own class work, keeps a theme change live without a re-render, and leaves nothing to resolve during SSR. Resolving them here would freeze the color instead.
+		// visx paints the y axis line and y tick marks from `gridColor`, and offers no y-specific field to override it the way `xAxisLineStyles` overrides the x side. An empty string is what leaves them unpainted, which is the design: the y axis carries labels only. `gridColorDark` seeds the x axis line, which `xAxisLineStyles` then overrides, but visx's config type requires it.
 		return buildChartTheme( {
 			...theme,
+			gridColor: '',
+			gridColorDark: '',
 			colors: paletteColors,
 			backgroundColor: resolveColor( theme.backgroundColor ),
 			htmlLabel: htmlLabelColor ? { color: htmlLabelColor } : undefined,

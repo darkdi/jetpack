@@ -10,8 +10,6 @@ describe( 'mergeThemes', () => {
 			strokeWidth: 1,
 		},
 		tickLength: 4,
-		gridColor: '',
-		gridColorDark: '',
 		leaderboardChart: {
 			primaryColor: '#global-primary',
 			secondaryColor: '#global-secondary',
@@ -26,8 +24,6 @@ describe( 'mergeThemes', () => {
 			strokeWidth: 2,
 		},
 		tickLength: 8,
-		gridColor: '',
-		gridColorDark: '',
 		leaderboardChart: {
 			primaryColor: '#local-primary',
 		},
@@ -67,8 +63,6 @@ describe( 'mergeThemes', () => {
 			backgroundColor: '#F0F0F0',
 			colors: [ '#green' ],
 			tickLength: 8,
-			gridColor: '',
-			gridColorDark: '',
 		};
 
 		const result = mergeThemes( baseTheme, partialLocalTheme );

@@ -57,8 +57,6 @@ export const mixedColorFormatsTheme: ChartTheme = {
 		'steelblue',
 	],
 	backgroundColor: 'hsl(0, 0%, 98%)',
-	gridColor: 'rgba(0, 0, 0, 0.1)',
-	gridColorDark: 'rgba(255, 255, 255, 0.15)',
 	gridStyles: {
 		stroke: 'rgb(200, 200, 200)',
 		strokeWidth: 1,

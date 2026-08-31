@@ -67,4 +67,14 @@ describe( 'useXYChartTheme', () => {
 
 		document.body.removeChild( scope );
 	} );
+
+	// The y axis carries labels only. visx paints its line and tick marks from `gridColor` and gives no y-side field to override, so the empty string passed there is the whole mechanism — and it is easy to lose, because every other color in the build is a catalog pointer.
+	it( 'leaves the y axis line and tick marks unpainted', () => {
+		const { result } = renderHook( () => useXYChartTheme( [] ) );
+
+		expect( result.current.axisStyles.y.left.axisLine.stroke ).toBe( '' );
+		expect( result.current.axisStyles.y.left.tickLine.stroke ).toBe( '' );
+		expect( result.current.axisStyles.y.right.axisLine.stroke ).toBe( '' );
+		expect( result.current.axisStyles.y.right.tickLine.stroke ).toBe( '' );
+	} );
 } );
