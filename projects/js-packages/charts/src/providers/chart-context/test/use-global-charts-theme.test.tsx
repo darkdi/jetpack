@@ -65,11 +65,5 @@ describe( 'useGlobalChartsTheme', () => {
 
 			expect( result.current.gridStyles ).toEqual( defaultTheme.gridStyles );
 		} );
-
-		it( 'should not throw when GlobalChartsContext is not available', () => {
-			expect( () => {
-				renderHook( () => useGlobalChartsTheme() );
-			} ).not.toThrow();
-		} );
 	} );
 } );

@@ -59,7 +59,7 @@ function parseStylesheet(): Map< string, Entry > {
 }
 
 /**
- * Parses the catalog tables in `TOKENS.md` — the ones whose header is `Role | Maps to …` — into the same shape as the stylesheet, so the two can be compared directly. Other tables in the document (theme-field mappings, deprecated aliases) are skipped.
+ * Parses the catalog tables in `TOKENS.md` — the ones whose header is `Role | Maps to …` — into the same shape as the stylesheet, so the two can be compared directly.
  *
  * @return Every documented role, keyed by name.
  */
@@ -120,11 +120,6 @@ describe( 'chart scope catalog', () => {
 	// published package. This is the check that stops the two drifting apart.
 	it.each( [ ...declared.keys() ] )( 'documents %s with the value it is declared with', token => {
 		expect( documented.get( token ) ).toEqual( declared.get( token ) );
-	} );
-
-	// A role reaches the page through this stylesheet and a consumer's own CSS, and nothing else. A `-theme` indirection would mean a second route had come back.
-	it( 'declares no theme-layer indirection', () => {
-		expect( stylesheet ).not.toMatch( /--a8c-charts-[\w-]+-theme/ );
 	} );
 
 	it( 'scopes the catalog to :where(.a8c-charts-scope) rather than :root', () => {

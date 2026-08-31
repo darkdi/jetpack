@@ -109,9 +109,7 @@ export type ChartType =
 export type OrientationType = ValueOf< typeof Orientation >;
 
 /**
- * Styling for one annotation, as its `styles` prop.
- *
- * The colors survive here and nowhere else. `--a8c-charts-color-annotation` moves every annotation on the page at once, and there is no per-annotation selector to narrow it with, so a single annotation that has to stand apart from the rest needs a value it can carry itself.
+ * Styling for one annotation, as its `styles` prop. Colors belong here because `--a8c-charts-color-annotation` moves every annotation on the page at once and no selector narrows it to one.
  */
 export type AnnotationStyles = {
 	circleSubject?: Omit< CircleSubjectProps, 'x' | 'y' | 'fill' > & {
@@ -126,9 +124,7 @@ export type AnnotationStyles = {
 };
 
 /**
- * Annotation styling on the theme: geometry only.
- *
- * Annotation colors come from `--a8c-charts-color-annotation` and `--a8c-charts-color-surface`. A theme-level color would be a second way to say the same thing for every annotation at once, which is exactly what the roles are for.
+ * Annotation styling on the theme: geometry only. Colors come from `--a8c-charts-color-annotation` and `--a8c-charts-color-surface`.
  */
 export type ThemeAnnotationStyles = {
 	circleSubject?: Omit< CircleSubjectProps, 'x' | 'y' | 'fill' | 'stroke' >;
@@ -351,9 +347,7 @@ export type DataPointPercentageCalculated = DataPointPercentage & {
 };
 
 /**
- * Base theme configuration for chart components with optional properties.
- *
- * Colors are not here. Every chart color is a `--a8c-charts-color-*` role, set in CSS inside the provider tree; see `TOKENS.md` for the catalog and what each role paints.
+ * Base theme configuration for chart components: shape and spacing. Chart colors are `--a8c-charts-color-*` roles set in CSS inside the provider tree, catalogued in `TOKENS.md`.
  */
 export type ChartTheme = {
 	/** Optional CSS styles for grid lines. */
@@ -364,11 +358,8 @@ export type ChartTheme = {
 	xTickLineStyles?: Omit< LineStyles, 'stroke' >;
 	/** Styles for x-axis line */
 	xAxisLineStyles?: Omit< LineStyles, 'stroke' >;
-	/** Styles for series lines */
 	/**
-	 * Per-series line styling — dash pattern, width, cap.
-	 *
-	 * `stroke` is omitted here and nowhere else in the line-style chain: these are spread on top of the palette-derived stroke, so a color set here would override `--a8c-charts-color-series-*` from the theme. A single series still takes one through `options.seriesLineStyle`, which is a per-instance override rather than a second theme.
+	 * Per-series line styling — dash pattern, width, cap. These spread on top of the palette-derived stroke, so a color here would override it; a single series takes one through `options.seriesLineStyle`.
 	 */
 	seriesLineStyles?: Array< Omit< LineStyles, 'stroke' > >;
 	/** Array of render functions for glyphs */

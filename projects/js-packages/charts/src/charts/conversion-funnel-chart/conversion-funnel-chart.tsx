@@ -251,7 +251,7 @@ const ConversionFunnelChartInternal: FC< ConversionFunnelChartProps > = ( {
 		: { color: '#000000' };
 
 	const isPositiveChange = changeIndicator?.startsWith( '+' );
-	// Only for `renderMainMetric`, which hands a consumer's own markup something to paint with. The default markup below picks a class instead — the stylesheet owns the color.
+	// Only for `renderMainMetric`, which hands a consumer's own markup something to paint with.
 	const changeColor = isPositiveChange ? CATALOG_POINTERS.trendUp : CATALOG_POINTERS.trendDown;
 
 	// Default main metric rendering function

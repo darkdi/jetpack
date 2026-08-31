@@ -115,7 +115,6 @@ const meta: Meta< StoryArgs > = {
 		const ChartComponent = <PieChart { ...chartProps } legend={ legend } />;
 
 		if ( labelTextColor || labelBackgroundColor ) {
-			// The roles reach the labels through the cascade, so a wrapper inside the provider tree is enough — both are painted, never resolved in JS.
 			return (
 				<div
 					style={

@@ -23,7 +23,7 @@ describe( 'useXYChartTheme', () => {
 		document.body.removeChild( scope );
 	} );
 
-	// Resolving a paint-only color here would freeze it: visx writes whatever it is handed onto the element, so a literal stops following the cascade and an override set below the provider wrapper never reaches it. Handing visx the pointer instead lets it resolve at the element it paints. jsdom does not compute `var()`, so what the pointer resolves *to* is covered in Storybook; this pins that the chain survives the theme build intact.
+	// jsdom does not compute `var()`, so what the pointer resolves *to* is covered in Storybook. This pins that the chain survives the theme build intact — resolving it here would freeze it.
 	it( 'hands visx the catalog pointer for paint-only colors rather than a resolved value', () => {
 		const scope = document.createElement( 'div' );
 		document.body.appendChild( scope );
@@ -68,7 +68,6 @@ describe( 'useXYChartTheme', () => {
 		document.body.removeChild( scope );
 	} );
 
-	// The y axis carries labels only until a consumer declares its roles. Kept apart from the x roles so the two axes can differ; before this the y side was unreachable, painted from a visx fallback nothing overrode.
 	it( 'gives the y axis its own roles, resolving to none', () => {
 		const { result } = renderHook( () => useXYChartTheme( [] ) );
 

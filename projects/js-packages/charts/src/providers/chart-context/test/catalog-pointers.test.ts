@@ -50,7 +50,7 @@ describe( 'catalog pointers', () => {
 } );
 
 describe( 'defaultTheme', () => {
-	// The whole point of CHARTS-263: a color has one route, a `--a8c-charts-color-*` role set in CSS. A color reappearing here would be a second one.
+	// A color has one route, a `--a8c-charts-color-*` role set in CSS. One reappearing here would be a second.
 	it( 'holds no color at all', () => {
 		const colorish = flatten( defaultTheme ).filter( value =>
 			/^(#|rgb|hsl|var\(--a8c-charts-color)/.test( value.trim() )

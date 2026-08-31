@@ -158,9 +158,7 @@ const LineChartAnnotation: FC< LineChartAnnotationProps > = ( {
 	const labelRef = useRef< SVGGElement >( null );
 	const [ height, setHeight ] = useState< number | null >( null );
 
-	// Deep merge styles to preserve nested object properties. The catalog pointers go in first so a
-	// per-datum color still wins; each reaches visx as a `var()` chain and resolves at the element
-	// it paints, which is what lets an override set on the chart apply.
+	// Deep merge to preserve nested object properties. Pointers first, so a per-datum color wins.
 	const styles = merge.all( [
 		ANNOTATION_POINTERS,
 		providerTheme.annotationStyles ?? {},

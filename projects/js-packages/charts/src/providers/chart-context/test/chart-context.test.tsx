@@ -10,9 +10,7 @@ import type { SeriesData } from '../../../types';
 import type { GlobalChartsContextValue } from '../types';
 
 describe( 'ChartContext', () => {
-	// The palette is read from the catalog roles at the provider's wrapper, so a test sets it the way a consumer does — by declaring the roles. jsdom implements custom-property inheritance, so declaring them on an ancestor is enough, and the nearest declaration wins.
-	//
-	// On `body` rather than the document root so the palette-resolution suite below can mount outside it and start from a genuinely undeclared palette. Testing Library renders into `body`, so every other test here inherits this one.
+	// The palette is set the way a consumer sets it, by declaring the roles. On `body` rather than the document root, so the palette-resolution suite below can mount outside it and start from an undeclared palette.
 	const PALETTE = [ '#ff0000', '#00ff00', '#0000ff' ];
 
 	const setPaletteRoles = ( element: HTMLElement, colors: readonly string[] ) =>
@@ -1871,12 +1869,8 @@ describe( 'ChartContext', () => {
 		} );
 	} );
 
-	// The provider resolves the five palette slots against its own wrapper. These cover what it does
-	// with what comes back — formats, gaps, junk, and the paths where nothing comes back at all.
-	//
-	// Each test declares its own slots on a container mounted outside `body`, so the file-wide palette
-	// is not inherited and a test can start from an undeclared one. Only where a test needs
-	// `getComputedStyle` itself to misbehave is it mocked.
+	// Each test declares its own slots on a container mounted outside `body`, so the file-wide
+	// palette is not inherited and a test can start from an undeclared one.
 	describe( 'GlobalChartsProvider - palette resolution', () => {
 		let originalGetComputedStyle: typeof window.getComputedStyle;
 		let container: HTMLDivElement;

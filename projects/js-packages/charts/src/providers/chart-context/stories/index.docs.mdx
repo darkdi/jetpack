@@ -223,7 +223,7 @@ Three placements need care:
 - **Tooltips rendered in a portal** — those of `PieChart`, `PieSemiCircleChart`, `HeatmapChart` and `ConversionFunnelChart`, which position through `@visx/tooltip`'s `useTooltipInPortal` — sit outside the provider's DOM tree, so they re-declare the catalog on themselves and never see an override scoped to the provider or to an element inside it. They do carry the scope class, so the `.a8c-charts-scope` rule above reaches them.
 - **`@wordpress/theme`'s `ThemeProvider` belongs above `GlobalChartsProvider`**, not between it and a chart. The catalog reads its `--wpds-*` tokens at the provider wrapper, so a `ThemeProvider` mounted below that wrapper is never consulted and CSS-painted colors keep the light-mode spec values.
 
-**The `theme` prop is not a second override path — it carries no colors at all.** Every color field was removed in CHARTS-263, so a role has one source outside the catalog: a CSS declaration of it. What remains on `theme` is shape and spacing with no role behind it — `tickLength`, `gridStyles.strokeWidth`, `svgLabelSmall.fontFamily`, the annotation geometry, the leaderboard's gaps.
+**The `theme` prop is not a second override path — it carries no colors at all.** A role has one source outside the catalog: a CSS declaration of it. What `theme` carries is shape and spacing — `tickLength`, `gridStyles.strokeWidth`, `svgLabelSmall.fontFamily`, the annotation geometry, the leaderboard's gaps.
 
 Two roles are narrower than their obvious name, so that moving one thing does not move four:
 

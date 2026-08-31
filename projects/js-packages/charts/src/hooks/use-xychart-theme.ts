@@ -27,7 +27,7 @@ export const useXYChartTheme = ( data: SeriesData[] ) => {
 
 		const seriesColors: string[] = JSON.parse( seriesColorKey );
 
-		// The palette is the one place a pointer has to be resolved: visx builds its `colorScale` from this array and uses it as the default stroke for a series rendered without an explicit one, so an unresolved entry paints nothing rather than degrading. Slots past the first have no catalog default and resolve to nothing until a consumer sets them; those are dropped so the scale compacts instead of repeating a color.
+		// visx uses this array as the default stroke for a series with none of its own, so an unresolved entry paints nothing. Slots past the first resolve to nothing until a consumer sets them, and are dropped so the scale compacts rather than repeating a color.
 		const paletteColors = [ ...seriesColors, ...CATALOG_POINTERS.series ]
 			.map( color => resolveColor( color ) )
 			.filter( ( color ): color is string => Boolean( color ) && ! color.includes( 'var(' ) );
@@ -35,11 +35,7 @@ export const useXYChartTheme = ( data: SeriesData[] ) => {
 		// The tooltip is painted in a portal outside the scope, and visx concatenates this color into a `box-shadow` where a chain cannot take a suffix; see TOKENS.md#the-svg-bridge. Passing it explicitly leaves `svgLabelSmall.fill`, which visx derives it from, a chain for the SVG tick labels.
 		const htmlLabelColor = resolveColor( CATALOG_POINTERS.labelAxis );
 
-		// Every painted color reaches visx as its catalog pointer, and that is the whole mechanism: visx writes each one onto the element it paints — an inline style for the grid, a presentation attribute elsewhere — and a `var()` chain resolves there natively. So the role is read at the painted element rather than snapshot at the provider wrapper, which is what makes an override on a chart's own class work, keeps a theme change live without a re-render, and leaves nothing to resolve during SSR. Resolving one here would freeze it instead.
-		//
-		// Both axes are painted from their own roles. The y pair resolves to `none` unless a consumer declares it, which is what leaves the y axis carrying labels only.
-		//
-		// `gridColor` and `gridColorDark` are visx's fallbacks for whichever of those four it is not given, so supplying all four leaves them reaching nothing. They stay because the config type requires them.
+		// `gridColor` and `gridColorDark` are visx's fallbacks for whichever of the four axis and grid style objects it is not given. All four are supplied, so the pair reaches nothing; it stays because the config type requires it.
 		return buildChartTheme( {
 			...theme,
 			gridColor: '',

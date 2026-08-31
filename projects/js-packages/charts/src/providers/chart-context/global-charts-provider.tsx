@@ -77,15 +77,9 @@ export const GlobalChartsProvider: FC< GlobalChartsProviderProps > = ( { childre
 	// Useful for animations that should only run after the color palette is resolved
 	const [ isColorPaletteResolved, setIsColorPaletteResolved ] = useState( false );
 
-	// Seed the color cache once the DOM exists, so the palette slots have something to resolve
-	// against. A layout effect rather than a memo because the catalog reaches the wrapper as a
-	// stylesheet, which must be applied before `getComputedStyle` can answer.
-	//
-	// Runs on mount only, and depends on nothing: the slots are a fixed manifest, and wrapperRef is
-	// stable for the lifetime of the provider. A remount is not a gap — effects always run on mount,
-	// so a new instance resolves against its own node. Only a node swap *within* one instance would
-	// go unseen, and the catalog is declared on the `.a8c-charts-scope` class rather than on a
-	// particular element, so the replacement carries the same computed values anyway.
+	// A layout effect rather than a memo: the catalog reaches the wrapper as a stylesheet, which
+	// must be applied before `getComputedStyle` can answer. Mount only — the slots are a fixed
+	// manifest and `wrapperRef` is stable for the provider's life.
 
 	useLayoutEffect( () => {
 		setIsColorPaletteResolved( false );
@@ -142,9 +136,8 @@ export const GlobalChartsProvider: FC< GlobalChartsProviderProps > = ( { childre
 		() => new Map()
 	);
 
-	// Reset group color mappings when the resolved palette changes. Keyed on the resolved colors
-	// rather than the cache object so a consumer passing an inline `theme` cannot reset the map on
-	// every render.
+	// Keyed on the resolved colors rather than the cache object, so a consumer passing an inline
+	// `theme` cannot reset the map on every render.
 	const paletteKey = colorCache.colors.join( ',' );
 
 	useEffect( () => {
