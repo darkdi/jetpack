@@ -1,0 +1,6 @@
+Significance: major
+Type: removed
+
+Remove every color field from the chart theme. Set the matching `--a8c-charts-color-*` custom property inside the provider tree instead — every removed field named one, and they were deprecated in the previous release. `TOKENS.md` lists the catalog. `LeaderboardChart`'s `primaryColor` and `secondaryColor` props and `HeatmapChart`'s `primaryColor` prop are unaffected, and a single annotation still takes colors through its own `styles` prop.
+
+Remove `gridColor` and `gridColorDark`, which were undocumented visx passthroughs. `gridColor` painted the y axis line and y tick marks, which no other field could reach and which the charts here deliberately leave unpainted; a chart that was setting it loses that line. There is no replacement — the y axis carries labels only.
