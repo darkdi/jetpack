@@ -3,6 +3,13 @@
  */
 import { useMemo } from 'react';
 import type { ChartTheme } from '@jetpack-premium-analytics/externals';
+/**
+ * Internal dependencies
+ */
+// Side-effect import: the chart colors this dashboard overrides, as catalog roles.
+// CHARTS-263 removed every color field from the charts `theme` prop, so they are set
+// in CSS instead — see `chart-roles.scss` for why the selector is what it is.
+import './chart-roles.scss';
 
 /**
  * The `@automattic/charts` theme plus the analytics-specific properties.
@@ -16,32 +23,22 @@ export type WooChartTheme = ChartTheme & {
 export function useChartTheme(): WooChartTheme {
 	return useMemo( () => {
 		return {
-			backgroundColor: 'var(--wpds-color-background-surface-neutral-strong)',
-			labelBackgroundColor: 'var(--wpds-color-background-interactive-neutral-weak)',
-			labelTextColor: 'var(--wpds-color-foreground-interactive-neutral-strong)',
 			gridStyles: {
-				stroke: 'var(--wpds-color-stroke-surface-neutral)',
 				strokeWidth: 1,
 			},
 			tickLength: 4,
-			gridColor: '',
-			gridColorDark: '',
 			// `fontSize` is load-bearing: it must stay a plain number, since resolveFontSize()
 			// rejects var() — without it visx falls back to 11 and margin/pie-label sizing break.
 			svgLabelSmall: {
-				fill: 'var(--wpds-color-foreground-content-neutral)',
 				fontSize: 12,
 			},
-			xTickLineStyles: { stroke: '' },
 			xAxisLineStyles: {
-				stroke: 'var(--wpds-color-stroke-surface-neutral)',
 				strokeWidth: 1,
 			},
 			legend: {
 				labelStyles: {
 					fontSize: 'var(--wpds-typography-font-size-sm)',
 					fontWeight: 400,
-					color: 'var(--wpds-color-foreground-content-neutral)',
 				},
 				containerStyles: {
 					rowGap: 'var( --wpds-dimension-padding-sm )',
@@ -62,16 +59,6 @@ export function useChartTheme(): WooChartTheme {
 				columnGap: 4,
 				labelSpacing: 'xs',
 				barBorderRadius: 'var(--wpds-border-radius-lg)',
-				deltaColors: [
-					'var(--wpds-color-stroke-surface-error-strong)',
-					'var(--wpds-color-foreground-content-neutral-weak)',
-					'var(--wpds-color-stroke-surface-success-strong)',
-				] as [ string, string, string ], // [ negative, neutral, positive ]
-			},
-			conversionFunnelChart: {
-				backgroundColor: 'var(--wpds-color-background-surface-brand)',
-				positiveChangeColor: 'var(--wpds-color-foreground-content-success-weak)',
-				negativeChangeColor: 'var(--wpds-color-foreground-content-error-weak)',
 			},
 			lineChart: {
 				lineStyles: {

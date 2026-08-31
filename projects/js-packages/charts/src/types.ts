@@ -365,7 +365,12 @@ export type ChartTheme = {
 	/** Styles for x-axis line */
 	xAxisLineStyles?: Omit< LineStyles, 'stroke' >;
 	/** Styles for series lines */
-	seriesLineStyles?: LineStyles[];
+	/**
+	 * Per-series line styling — dash pattern, width, cap.
+	 *
+	 * `stroke` is omitted here and nowhere else in the line-style chain: these are spread on top of the palette-derived stroke, so a color set here would override `--a8c-charts-color-series-*` from the theme. A single series still takes one through `options.seriesLineStyle`, which is a per-instance override rather than a second theme.
+	 */
+	seriesLineStyles?: Array< Omit< LineStyles, 'stroke' > >;
 	/** Array of render functions for glyphs */
 	glyphs?: Array< < Datum extends object >( props: GlyphProps< Datum > ) => ReactNode >;
 	/** Legend specific settings */
@@ -396,7 +401,9 @@ export type ChartTheme = {
 		labelSpacing?: GapSize;
 	};
 	lineChart?: {
-		lineStyles?: Partial< Record< NonNullable< SeriesDataOptions[ 'type' ] >, LineStyles > >;
+		lineStyles?: Partial<
+			Record< NonNullable< SeriesDataOptions[ 'type' ] >, Omit< LineStyles, 'stroke' > >
+		>;
 	};
 	barChart?: {
 		barStyles?: Partial< Record< NonNullable< SeriesDataOptions[ 'type' ] >, BarStyles > >;
@@ -432,7 +439,7 @@ export type ChartTheme = {
 export type CompleteChartTheme = Required< ChartTheme > & {
 	leaderboardChart: Required< NonNullable< ChartTheme[ 'leaderboardChart' ] > >;
 	lineChart: {
-		lineStyles: Record< NonNullable< SeriesDataOptions[ 'type' ] >, LineStyles >;
+		lineStyles: Record< NonNullable< SeriesDataOptions[ 'type' ] >, Omit< LineStyles, 'stroke' > >;
 	};
 	barChart: {
 		barStyles: Record< NonNullable< SeriesDataOptions[ 'type' ] >, BarStyles >;

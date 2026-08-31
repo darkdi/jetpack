@@ -335,25 +335,23 @@ Access the full context for advanced chart functionality:
 
 ### useChartScopeElement
 
-Returns the element a chart's tokens resolve against — the wrapper the chart renders into, which is where an override set anywhere between the provider and that chart has landed. Pair it with `normalizeColorToHex` and `resolveCssVariable` when JS needs a *resolved* color rather than the token string: computing text contrast against `theme.backgroundColor`, for example, or feeding a color to Google Charts, which cannot read `var()`.
+Returns the element a chart's tokens resolve against — the wrapper the chart renders into, which is where an override set anywhere between the provider and that chart has landed. Pair it with `normalizeColorToHex` and `resolveCssVariable` when JS needs a *resolved* color rather than the token string: computing text contrast against the chart background, for example, or feeding a color to Google Charts, which cannot read `var()`.
 
 <Source
 	language="tsx"
 	code={ `import {
 		useChartScopeElement,
-		useGlobalChartsTheme,
 		normalizeColorToHex,
 		resolveCssVariable,
 	} from '@automattic/charts';
 
 	function ContrastAwareLabel() {
 		const scopeElement = useChartScopeElement();
-		const theme = useGlobalChartsTheme();
 
 		// Resolves at call time, so the result follows a light/dark switch
-		// even when the token string never changes. Empty input returns ''.
+		// even when the role's value never changes. Empty input returns ''.
 		const backgroundHex = normalizeColorToHex(
-			theme.backgroundColor,
+			'var(--a8c-charts-color-background, #fff)',
 			scopeElement,
 			resolveCssVariable
 		);
