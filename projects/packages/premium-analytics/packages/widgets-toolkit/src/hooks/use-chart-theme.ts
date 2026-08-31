@@ -6,9 +6,7 @@ import type { ChartTheme } from '@jetpack-premium-analytics/externals';
 /**
  * Internal dependencies
  */
-// Side-effect import: the chart colors this dashboard overrides, as catalog roles.
-// CHARTS-263 removed every color field from the charts `theme` prop, so they are set
-// in CSS instead — see `chart-roles.scss` for why the selector is what it is.
+// The dashboard's chart colors. They are set in CSS, not on the theme below.
 import './chart-roles.scss';
 
 /**
