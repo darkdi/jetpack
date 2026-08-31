@@ -1,36 +1,13 @@
-// The chart colors this dashboard sets differently from the charts defaults.
-// They were fields on `@automattic/charts`' `theme` prop until CHARTS-263
-// removed every color from it; a color is now a `--a8c-charts-color-*` role.
-
-// Declared on `.a8c-charts-scope`, not on a wrapper of our own, for two
-// reasons. `GlobalChartsProvider` declares the catalog on its own wrapper, and
-// an element's own declaration beats one it inherits, so a rule on an ancestor
-// would never win. And the roles read in JS — the background above all — are
-// resolved at that same wrapper. This selector matches every provider wrapper
-// on the page, including the one a portal tooltip carries.
-
-// Only the differences are here. The grid, axis, label and background roles
-// already map to the same WPDS tokens this dashboard was passing, so restating
-// them would be a second copy to keep in step for no gain.
+// On the scope element itself: its own declaration beats an inherited one.
 .a8c-charts-scope {
 	--a8c-charts-color-label-background: var(--wpds-color-background-interactive-neutral-weak);
 	--a8c-charts-color-label-on-fill: var(--wpds-color-foreground-interactive-neutral-strong);
-
-	// The x tick marks are not drawn; the axis line alone carries the scale.
-	--a8c-charts-color-tick-x: none;
-
-	// The funnel's step background.
 	--a8c-charts-color-surface-secondary: var(--wpds-color-background-surface-brand);
+
+	// The axis line alone carries the scale.
+	--a8c-charts-color-tick-x: none;
 }
 
-// The leaderboard's delta values take a stronger pair than the funnel's change
-// indicator, which keeps the catalog default. Both read the same two roles, so
-// the distinction is made here, on the chart's own element — nearer the delta
-// than `.a8c-charts-scope`, and so the one that wins.
-
-// This reaches them because the deltas are painted from the charts stylesheet.
-// A role resolved in JS at the provider wrapper — the series palette, the chart
-// background — cannot be scoped this way.
 .leaderboard-chart {
 	--a8c-charts-color-trend-down: var(--wpds-color-stroke-surface-error-strong);
 	--a8c-charts-color-trend-up: var(--wpds-color-stroke-surface-success-strong);
