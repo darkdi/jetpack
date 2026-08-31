@@ -68,13 +68,17 @@ describe( 'useXYChartTheme', () => {
 		document.body.removeChild( scope );
 	} );
 
-	// The y axis carries labels only. visx paints its line and tick marks from `gridColor` and gives no y-side field to override, so the empty string passed there is the whole mechanism — and it is easy to lose, because every other color in the build is a catalog pointer.
-	it( 'leaves the y axis line and tick marks unpainted', () => {
+	// The y axis carries labels only until a consumer declares its roles. Kept apart from the x roles so the two axes can differ; before this the y side was unreachable, painted from a visx fallback nothing overrode.
+	it( 'gives the y axis its own roles, resolving to none', () => {
 		const { result } = renderHook( () => useXYChartTheme( [] ) );
 
-		expect( result.current.axisStyles.y.left.axisLine.stroke ).toBe( '' );
-		expect( result.current.axisStyles.y.left.tickLine.stroke ).toBe( '' );
-		expect( result.current.axisStyles.y.right.axisLine.stroke ).toBe( '' );
-		expect( result.current.axisStyles.y.right.tickLine.stroke ).toBe( '' );
+		for ( const side of [ 'left', 'right' ] as const ) {
+			expect( result.current.axisStyles.y[ side ].axisLine.stroke ).toBe(
+				'var(--a8c-charts-color-axis-y, none)'
+			);
+			expect( result.current.axisStyles.y[ side ].tickLine.stroke ).toBe(
+				'var(--a8c-charts-color-tick-y, none)'
+			);
+		}
 	} );
 } );

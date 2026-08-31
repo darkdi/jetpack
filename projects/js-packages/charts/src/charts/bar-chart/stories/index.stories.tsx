@@ -701,6 +701,57 @@ export const ComparisonMulti: Story = {
 	},
 };
 
+export const PaintedYAxis: Story = {
+	args: {
+		containerWidth: '900px',
+		containerHeight: '340px',
+		resize: 'none',
+	},
+	render: () => (
+		<div style={ { display: 'grid', gap: '32px', gridTemplateColumns: 'repeat(2, auto)' } }>
+			<div>
+				<h3 style={ { marginBottom: '4px' } }>Default — labels only</h3>
+				<p style={ { marginBottom: '12px', color: '#666' } }>
+					Both roles resolve to <code>none</code>.
+				</p>
+				<BarChart
+					width={ 380 }
+					height={ 220 }
+					data={ [ medalCountsData[ 0 ] ] }
+					gridVisibility="x"
+				/>
+			</div>
+			<div
+				style={
+					{
+						'--a8c-charts-color-axis-y': '#3858e9',
+						'--a8c-charts-color-tick-y': '#cc1818',
+					} as React.CSSProperties
+				}
+			>
+				<h3 style={ { marginBottom: '4px' } }>Painted</h3>
+				<p style={ { marginBottom: '12px', color: '#666' } }>
+					<code>--a8c-charts-color-axis-y</code> blue, <code>--a8c-charts-color-tick-y</code> red.
+				</p>
+				<BarChart
+					width={ 380 }
+					height={ 220 }
+					data={ [ medalCountsData[ 0 ] ] }
+					gridVisibility="x"
+				/>
+			</div>
+		</div>
+	),
+	parameters: {
+		docs: {
+			description: {
+				story:
+					'The y axis has its own pair of catalog roles, set in CSS anywhere inside the provider tree. Both resolve to `none` by default, which is what leaves the y axis carrying tick labels and nothing else; declaring either one paints that part. They are separate from `--a8c-charts-color-axis` and `--a8c-charts-color-tick`, which are the x side — the x axis is identical in both charts here. Nothing reaches any of these through the `theme` prop; colors are CSS.',
+			},
+		},
+	},
+};
+
 export const LabelOverflowEllipsis: Story = {
 	render: () => (
 		<div style={ { display: 'grid', gap: '40px' } }>

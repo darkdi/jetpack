@@ -45,6 +45,18 @@
 	--a8c-charts-color-grid: var(--wpds-color-stroke-surface-neutral, #dbdbdb);
 	--a8c-charts-color-axis: var(--wpds-color-stroke-surface-neutral, #dbdbdb);
 	--a8c-charts-color-tick: var(--wpds-color-stroke-surface-neutral, #dbdbdb);
+	// The y axis carries labels only by default. Declare either of these to paint
+	// it — `--a8c-charts-color-axis` and `-tick` are the x side, so the two axes
+	// can differ. `none` rather than `transparent`: nothing is painted at all,
+	// which keeps the line out of hit-testing as well as out of sight.
+	--a8c-charts-color-axis-y: none;
+	--a8c-charts-color-tick-y: none;
+	// A role read by a `fill` needs a terminal literal in its chain even when the
+	// intent is "paint nothing", because `fill` starts at black: a fallback-less
+	// var() naming an undeclared property is invalid at computed-value time, so
+	// the declaration is dropped and the initial value paints. That is why
+	// --a8c-charts-color-label-background carries `transparent` above. `stroke`
+	// starts at `none`, so the pair here is explicit rather than load-bearing.
 	--a8c-charts-color-label: var(--wpds-color-foreground-content-neutral, #1e1e1e);
 	--a8c-charts-color-label-secondary: var(--wpds-color-foreground-content-neutral-weak, #707070);
 	--a8c-charts-color-label-inverse: var(--wpds-color-foreground-interactive-neutral-strong, #f0f0f0);

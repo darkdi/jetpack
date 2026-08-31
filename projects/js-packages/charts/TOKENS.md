@@ -54,7 +54,7 @@ Some roles are deliberately narrower than the obvious name, so that moving one t
 
 That is what makes the role read **at the painted element** rather than snapshot at the provider wrapper: an override on a chart's own class reaches it, a theme change repaints with no re-render, and SSR emits the chain for the client to resolve on paint. Resolving such a color in JS would freeze it and undo all three, which is why nothing does.
 
-There is no stylesheet and no class involved. In particular the axes need neither: `xAxisLineStyles` and `xTickLineStyles` are x-axis-only fields, so visx paints the x axis and leaves the y axis unstroked without anything having to distinguish them.
+There is no stylesheet and no class involved. In particular the axes need neither: visx takes a separate style object per axis, so each one is handed its own roles and nothing has to distinguish them after the fact.
 
 What else crosses in JS is what something reads as a *value*: the series palette, which visx turns into its `colorScale`, and the background, which the default glyph, the area-chart band, the line-chart gradient stops, the heatmap's contrast math and `GeoChart` each consume as a concrete string.
 
@@ -78,6 +78,8 @@ The scope element is the wrapper a chart is rendered into, which sits **above** 
 | `--a8c-charts-color-grid` | `--wpds-color-stroke-surface-neutral` | `#dbdbdb` |
 | `--a8c-charts-color-axis` | `--wpds-color-stroke-surface-neutral` | `#dbdbdb` |
 | `--a8c-charts-color-tick` | `--wpds-color-stroke-surface-neutral` | `#dbdbdb` |
+| `--a8c-charts-color-axis-y` | _(none — unpainted unless a consumer sets it)_ | `none` |
+| `--a8c-charts-color-tick-y` | _(none — unpainted unless a consumer sets it)_ | `none` |
 | `--a8c-charts-color-label` | `--wpds-color-foreground-content-neutral` | `#1e1e1e` |
 | `--a8c-charts-color-label-secondary` | `--wpds-color-foreground-content-neutral-weak` | `#707070` |
 | `--a8c-charts-color-label-inverse` | `--wpds-color-foreground-interactive-neutral-strong` | `#f0f0f0` |
@@ -95,6 +97,21 @@ The scope element is the wrapper a chart is rendered into, which sits **above** 
 | `--a8c-charts-color-tooltip-surface` | _(none — translucent dark surface, no WPDS fit)_ | `rgb(0 0 0 / 85%)` |
 
 Axis and tick share grid's WPDS token but stay distinct roles, so the three can be themed independently.
+
+### The y axis
+
+`--a8c-charts-color-axis` and `--a8c-charts-color-tick` paint the **x** axis. The y axis has its own pair, resolving to `none`, so by default it carries tick labels and nothing else. Declare either to paint it:
+
+```css
+.my-dashboard {
+	--a8c-charts-color-axis-y: #dbdbdb;
+	--a8c-charts-color-tick-y: #dbdbdb;
+}
+```
+
+The terminal `none` in each chain is explicit rather than load-bearing: `stroke` already starts at `none`, so an undeclared role paints nothing either way.
+
+**It would be load-bearing on a `fill`.** A `var()` naming an undeclared property with no fallback is invalid at computed-value time, which drops the declaration rather than leaving it absent — and `fill` starts at *black*. That is why `--a8c-charts-color-label-background` carries a terminal `transparent`: without it, an undeclared role would put a black plate behind every pie label. Give any role read by a `fill` a terminal literal, even when the intent is "paint nothing".
 
 ### The series palette
 

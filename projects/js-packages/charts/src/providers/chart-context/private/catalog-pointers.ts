@@ -22,6 +22,10 @@ export const CATALOG_POINTERS = {
 	grid: 'var(--a8c-charts-color-grid, #dbdbdb)',
 	axis: 'var(--a8c-charts-color-axis, #dbdbdb)',
 	tick: 'var(--a8c-charts-color-tick, #dbdbdb)',
+	// The y axis carries labels only unless a consumer asks for more, so these resolve to `none`
+	// rather than to a color.
+	axisY: 'var(--a8c-charts-color-axis-y, none)',
+	tickY: 'var(--a8c-charts-color-tick-y, none)',
 	annotation: 'var(--a8c-charts-color-annotation, #1e1e1e)',
 	surface: 'var(--a8c-charts-color-surface, #fff)',
 	surfaceSecondary: 'var(--a8c-charts-color-surface-secondary, #f4f4f4)',

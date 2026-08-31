@@ -37,7 +37,9 @@ export const useXYChartTheme = ( data: SeriesData[] ) => {
 
 		// Every painted color reaches visx as its catalog pointer, and that is the whole mechanism: visx writes each one onto the element it paints — an inline style for the grid, a presentation attribute elsewhere — and a `var()` chain resolves there natively. So the role is read at the painted element rather than snapshot at the provider wrapper, which is what makes an override on a chart's own class work, keeps a theme change live without a re-render, and leaves nothing to resolve during SSR. Resolving one here would freeze it instead.
 		//
-		// visx paints the y axis line and y tick marks from `gridColor`, and offers no y-specific field to override it the way `xAxisLineStyles` overrides the x side. An empty string is what leaves them unpainted, which is the design: the y axis carries labels only. `gridColorDark` seeds the x axis line, which `xAxisLineStyles` then overrides, but visx's config type requires it.
+		// Both axes are painted from their own roles. The y pair resolves to `none` unless a consumer declares it, which is what leaves the y axis carrying labels only.
+		//
+		// `gridColor` and `gridColorDark` are visx's fallbacks for whichever of those four it is not given, so supplying all four leaves them reaching nothing. They stay because the config type requires them.
 		return buildChartTheme( {
 			...theme,
 			gridColor: '',
@@ -48,6 +50,8 @@ export const useXYChartTheme = ( data: SeriesData[] ) => {
 			gridStyles: { ...theme.gridStyles, stroke: CATALOG_POINTERS.grid },
 			xAxisLineStyles: { ...theme.xAxisLineStyles, stroke: CATALOG_POINTERS.axis },
 			xTickLineStyles: { ...theme.xTickLineStyles, stroke: CATALOG_POINTERS.tick },
+			yAxisLineStyles: { stroke: CATALOG_POINTERS.axisY },
+			yTickLineStyles: { stroke: CATALOG_POINTERS.tickY },
 			svgLabelSmall: { ...theme.svgLabelSmall, fill: CATALOG_POINTERS.labelAxis },
 		} );
 	}, [ theme, seriesColorKey, scopeElement ] );
