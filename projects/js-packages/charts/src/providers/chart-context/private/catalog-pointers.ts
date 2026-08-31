@@ -20,10 +20,10 @@ export const CATALOG_POINTERS = {
 	label: 'var(--a8c-charts-color-label, #1e1e1e)',
 	labelAxis: 'var(--a8c-charts-color-label-axis, #1e1e1e)',
 	grid: 'var(--a8c-charts-color-grid, #dbdbdb)',
-	axis: 'var(--a8c-charts-color-axis, #dbdbdb)',
-	tick: 'var(--a8c-charts-color-tick, #dbdbdb)',
-	// The y axis carries labels only unless a consumer asks for more, so these resolve to `none`
-	// rather than to a color.
+	// One pair per axis. The y axis carries labels only unless a consumer asks for more, so its
+	// pair resolves to `none` rather than to a color.
+	axisX: 'var(--a8c-charts-color-axis-x, #dbdbdb)',
+	tickX: 'var(--a8c-charts-color-tick-x, #dbdbdb)',
 	axisY: 'var(--a8c-charts-color-axis-y, none)',
 	tickY: 'var(--a8c-charts-color-tick-y, none)',
 	annotation: 'var(--a8c-charts-color-annotation, #1e1e1e)',

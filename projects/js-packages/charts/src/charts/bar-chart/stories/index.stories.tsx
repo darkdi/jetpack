@@ -746,7 +746,7 @@ export const PaintedYAxis: Story = {
 		docs: {
 			description: {
 				story:
-					'The y axis has its own pair of catalog roles, set in CSS anywhere inside the provider tree. Both resolve to `none` by default, which is what leaves the y axis carrying tick labels and nothing else; declaring either one paints that part. They are separate from `--a8c-charts-color-axis` and `--a8c-charts-color-tick`, which are the x side — the x axis is identical in both charts here. Nothing reaches any of these through the `theme` prop; colors are CSS.',
+					'Each axis has its own pair of catalog roles, set in CSS anywhere inside the provider tree. The y pair resolves to `none` by default, which is what leaves that axis carrying tick labels and nothing else; declaring either one paints that part. The x pair — `--a8c-charts-color-axis-x` and `--a8c-charts-color-tick-x` — is untouched here, which is why the x axis is identical in both charts. Nothing reaches any of these through the `theme` prop; colors are CSS.',
 			},
 		},
 	},

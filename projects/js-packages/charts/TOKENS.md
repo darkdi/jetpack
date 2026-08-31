@@ -76,8 +76,8 @@ The scope element is the wrapper a chart is rendered into, which sits **above** 
 |---|---|---|
 | `--a8c-charts-color-series-1` | `--wp-admin-theme-color` | `var(--wpds-color-foreground-interactive-brand, var(--wp-admin-theme-color, #3858e9))` |
 | `--a8c-charts-color-grid` | `--wpds-color-stroke-surface-neutral` | `#dbdbdb` |
-| `--a8c-charts-color-axis` | `--wpds-color-stroke-surface-neutral` | `#dbdbdb` |
-| `--a8c-charts-color-tick` | `--wpds-color-stroke-surface-neutral` | `#dbdbdb` |
+| `--a8c-charts-color-axis-x` | `--wpds-color-stroke-surface-neutral` | `#dbdbdb` |
+| `--a8c-charts-color-tick-x` | `--wpds-color-stroke-surface-neutral` | `#dbdbdb` |
 | `--a8c-charts-color-axis-y` | _(none — unpainted unless a consumer sets it)_ | `none` |
 | `--a8c-charts-color-tick-y` | _(none — unpainted unless a consumer sets it)_ | `none` |
 | `--a8c-charts-color-label` | `--wpds-color-foreground-content-neutral` | `#1e1e1e` |
@@ -96,11 +96,11 @@ The scope element is the wrapper a chart is rendered into, which sits **above** 
 | `--a8c-charts-color-track` | `--wpds-color-background-track-neutral-weak` | `#f0f0f0` |
 | `--a8c-charts-color-tooltip-surface` | _(none — translucent dark surface, no WPDS fit)_ | `rgb(0 0 0 / 85%)` |
 
-Axis and tick share grid's WPDS token but stay distinct roles, so the three can be themed independently.
+The x axis and tick roles share grid's WPDS token but stay distinct roles, so the three can be themed independently.
 
-### The y axis
+### One pair of roles per axis
 
-`--a8c-charts-color-axis` and `--a8c-charts-color-tick` paint the **x** axis. The y axis has its own pair, resolving to `none`, so by default it carries tick labels and nothing else. Declare either to paint it:
+Each axis names itself: `--a8c-charts-color-axis-x` / `-tick-x` paint the x axis, `--a8c-charts-color-axis-y` / `-tick-y` the y. The y pair resolves to `none`, so by default that axis carries tick labels and nothing else. Declare either to paint it:
 
 ```css
 .my-dashboard {
@@ -108,6 +108,10 @@ Axis and tick share grid's WPDS token but stay distinct roles, so the three can 
 	--a8c-charts-color-tick-y: #dbdbdb;
 }
 ```
+
+**There is deliberately no broad `--a8c-charts-color-axis` covering both.** It would have to mean one of two things, and neither is true: that setting it moves both axes — which cannot hold while the y side defaults to unpainted — or that it moves only x, which is a name that misleads exactly once per consumer, and silently. The tick *labels* are a different matter and do share a role (`--a8c-charts-color-label-axis`), because both axes label identically.
+
+Gridlines also stay on one role, `--a8c-charts-color-grid`: visx paints rows and columns from a single style object, so the grid is genuinely one thing rather than two.
 
 The terminal `none` in each chain is explicit rather than load-bearing: `stroke` already starts at `none`, so an undeclared role paints nothing either way.
 

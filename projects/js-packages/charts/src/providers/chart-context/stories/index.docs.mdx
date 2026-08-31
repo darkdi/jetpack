@@ -153,8 +153,8 @@ The context respects explicit color overrides while maintaining group stability 
 
 		/* Grid, axis, ticks and their labels */
 		--a8c-charts-color-grid: #dbdbdb;
-		--a8c-charts-color-axis: #dbdbdb;
-		--a8c-charts-color-tick: #dbdbdb;
+		--a8c-charts-color-axis-x: #dbdbdb;
+		--a8c-charts-color-tick-x: #dbdbdb;
 		--a8c-charts-color-label-axis: #1e1e1e;
 
 		/* Every label at once, legend included */
@@ -218,26 +218,19 @@ That rule matches every provider wrapper — including the one a bare chart moun
 
 Three placements need care:
 
-- **A chart's own class is too deep to reach the SVG colors.** Setting a role on the element a chart's `className` lands on — `.line-chart { --a8c-charts-color-grid: … }` — moves everything that chart paints in CSS, but not the gridlines, axis lines or tick labels: visx and Google Charts need concrete values, which are resolved in JS at the chart's scope element, an ancestor of the class you targeted. The result is a half-applied override, so scope this kind of rule to a wrapper **around** the chart instead. Supporting it on the chart itself is tracked in CHARTS-255.
+- **A chart's own class reaches everything it paints, but not the palette.** Setting a role on the element a chart's `className` lands on — `.line-chart { --a8c-charts-color-grid: … }` — moves the gridlines, axis lines and tick labels, because each of those carries its `var()` chain onto the element and resolves it there. It does not move the series colors or the chart background: those are read as strings in JS, at the chart's scope element, which is an ancestor of the class you targeted. Scope a rule for those to a wrapper **around** the chart.
 
 - **Tooltips rendered in a portal** — those of `PieChart`, `PieSemiCircleChart`, `HeatmapChart` and `ConversionFunnelChart`, which position through `@visx/tooltip`'s `useTooltipInPortal` — sit outside the provider's DOM tree, so they re-declare the catalog on themselves and never see an override scoped to the provider or to an element inside it. They do carry the scope class, so the `.a8c-charts-scope` rule above reaches them.
 - **`@wordpress/theme`'s `ThemeProvider` belongs above `GlobalChartsProvider`**, not between it and a chart. The catalog reads its `--wpds-*` tokens at the provider wrapper, so a `ThemeProvider` mounted below that wrapper is never consulted and CSS-painted colors keep the light-mode spec values.
 
-The `theme` prop is a second, narrower override path. Five `ChartTheme` fields map to a catalog role, and setting one publishes it as that role's theme-layer variable (`--a8c-charts-color-grid-theme` for the grid) on the provider wrapper — so it also reaches the SVG- and Google-Charts-painted colors those tools can't read from `theme` directly:
+**The `theme` prop is not a second override path — it carries no colors at all.** Every color field was removed in CHARTS-263, so a role has one source outside the catalog: a CSS declaration of it. What remains on `theme` is shape and spacing with no role behind it — `tickLength`, `gridStyles.strokeWidth`, `svgLabelSmall.fontFamily`, the annotation geometry, the leaderboard's gaps.
 
-| `theme` field | Catalog role |
-| --- | --- |
-| `backgroundColor` | `--a8c-charts-color-background` |
-| `gridStyles.stroke` | `--a8c-charts-color-grid` |
-| `xAxisLineStyles.stroke` | `--a8c-charts-color-axis` |
-| `xTickLineStyles.stroke` | `--a8c-charts-color-tick` |
-| `svgLabelSmall.fill` | `--a8c-charts-color-label-axis` |
+Two roles are narrower than their obvious name, so that moving one thing does not move four:
 
-Each field publishes a role read by exactly the elements that field already controlled, so a `theme` override never spreads further than the element class it names. Where the obvious role has wider readership, one side takes a role of its own: `svgLabelSmall.fill` writes the narrow `--a8c-charts-color-label-axis`, leaving legend labels, heatmap cell values, funnel labels and the line-chart tooltip on the broad `--a8c-charts-color-label`. Set the broad role in CSS to move them all together.
+- `--a8c-charts-color-label-axis` derives from `--a8c-charts-color-label`. Set the broad one to move every label — legend labels, heatmap cell values, funnel labels, the line-chart tooltip — or the narrow one to move only the SVG axis labels.
+- `--a8c-charts-color-surface` — the annotation label, `.x-zoom__reset`, tooltips — is a sibling of `--a8c-charts-color-background`, not a child, so the chart's background and the surfaces over it move independently.
 
-A CSS declaration of the role wins over the `theme` prop wherever you set it, the provider wrapper included: the prop writes the theme layer, and a role declared in CSS never reads that layer.
-
-Publishing the value one layer out is what keeps the catalog default reachable. An override CSS cannot resolve — most often `var(--wpds-…)` with no fallback, when the design-system stylesheet isn't loaded — leaves the role resolving its own mapped token instead of taking every reader of that role down with it. A value that points at the role it would override is not published at all, since that would make the role depend on itself; the field falls back to the catalog default on both the CSS and SVG paths, so the two never disagree.
+The axes go the other way: there is no broad axis role, only `--a8c-charts-color-axis-x` / `-tick-x` and `--a8c-charts-color-axis-y` / `-tick-y`. The y pair resolves to `none`, so that axis carries labels only until you declare one.
 
 See TOKENS.md for the full catalog and precedence order.
 

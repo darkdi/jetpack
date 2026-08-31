@@ -36,10 +36,10 @@ describe( 'useXYChartTheme', () => {
 
 		expect( result.current.gridStyles.stroke ).toBe( 'var(--a8c-charts-color-grid, #dbdbdb)' );
 		expect( result.current.axisStyles.x.bottom.axisLine.stroke ).toBe(
-			'var(--a8c-charts-color-axis, #dbdbdb)'
+			'var(--a8c-charts-color-axis-x, #dbdbdb)'
 		);
 		expect( result.current.axisStyles.x.bottom.tickLine.stroke ).toBe(
-			'var(--a8c-charts-color-tick, #dbdbdb)'
+			'var(--a8c-charts-color-tick-x, #dbdbdb)'
 		);
 		expect( result.current.axisStyles.x.bottom.tickLabel.fill ).toBe(
 			'var(--a8c-charts-color-label-axis, #1e1e1e)'

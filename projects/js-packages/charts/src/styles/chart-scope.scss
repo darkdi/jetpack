@@ -43,12 +43,14 @@
 	// example --wpds-* reference in a comment here — it is read as a real one.
 	--a8c-charts-color-series-1: var(--wp-admin-theme-color, var(--wpds-color-foreground-interactive-brand, var(--wp-admin-theme-color, #3858e9)));
 	--a8c-charts-color-grid: var(--wpds-color-stroke-surface-neutral, #dbdbdb);
-	--a8c-charts-color-axis: var(--wpds-color-stroke-surface-neutral, #dbdbdb);
-	--a8c-charts-color-tick: var(--wpds-color-stroke-surface-neutral, #dbdbdb);
+	// One pair per axis, named for the axis it paints. There is deliberately no
+	// broad "axis" role above them: the two sides do not share a default, so a
+	// role covering both could not be set without changing one of them.
+	--a8c-charts-color-axis-x: var(--wpds-color-stroke-surface-neutral, #dbdbdb);
+	--a8c-charts-color-tick-x: var(--wpds-color-stroke-surface-neutral, #dbdbdb);
 	// The y axis carries labels only by default. Declare either of these to paint
-	// it — `--a8c-charts-color-axis` and `-tick` are the x side, so the two axes
-	// can differ. `none` rather than `transparent`: nothing is painted at all,
-	// which keeps the line out of hit-testing as well as out of sight.
+	// it. `none` rather than `transparent`: nothing is painted at all, which keeps
+	// the line out of hit-testing as well as out of sight.
 	--a8c-charts-color-axis-y: none;
 	--a8c-charts-color-tick-y: none;
 	// A role read by a `fill` needs a terminal literal in its chain even when the
