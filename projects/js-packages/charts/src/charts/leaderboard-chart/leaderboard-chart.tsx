@@ -288,6 +288,7 @@ const LeaderboardChartInternal: FC< LeaderboardChartProps > = ( {
 					legendElement={ false }
 					legendChildren={ legendChildren }
 					className={ clsx(
+						'leaderboard-chart',
 						styles.leaderboardChart,
 						{
 							[ styles[ 'leaderboardChart--responsive' ] ]: ! propWidth && ! propHeight,
@@ -332,6 +333,7 @@ const LeaderboardChartInternal: FC< LeaderboardChartProps > = ( {
 				legendElement={ legendElement }
 				legendChildren={ legendChildren }
 				className={ clsx(
+					'leaderboard-chart',
 					styles.leaderboardChart,
 					{
 						[ styles[ 'leaderboardChart--responsive' ] ]: ! propWidth && ! propHeight,

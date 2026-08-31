@@ -22,3 +22,16 @@
 	// The funnel's step background.
 	--a8c-charts-color-surface-secondary: var(--wpds-color-background-surface-brand);
 }
+
+// The leaderboard's delta values take a stronger pair than the funnel's change
+// indicator, which keeps the catalog default. Both read the same two roles, so
+// the distinction is made here, on the chart's own element — nearer the delta
+// than `.a8c-charts-scope`, and so the one that wins.
+
+// This reaches them because the deltas are painted from the charts stylesheet.
+// A role resolved in JS at the provider wrapper — the series palette, the chart
+// background — cannot be scoped this way.
+.leaderboard-chart {
+	--a8c-charts-color-trend-down: var(--wpds-color-stroke-surface-error-strong);
+	--a8c-charts-color-trend-up: var(--wpds-color-stroke-surface-success-strong);
+}

@@ -1,4 +1,4 @@
 Significance: patch
 Type: changed
 
-Set the dashboard's chart colors as `--a8c-charts-color-*` custom properties instead of chart theme fields, which no longer carry colors. The leaderboard's delta values take the same trend colors as the funnel's change indicator, one step weaker than before.
+Set the dashboard's chart colors as `--a8c-charts-color-*` custom properties instead of chart theme fields, which no longer carry colors. No visible change.
