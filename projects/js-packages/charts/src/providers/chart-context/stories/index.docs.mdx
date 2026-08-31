@@ -76,19 +76,16 @@ Precedence for a series color, highest first:
 
 1. `options.stroke` on that series — the per-series override.
 2. A CSS declaration of `--a8c-charts-color-series-N` anywhere between the chart and the provider.
-3. `theme.colors[ N - 1 ]`, which writes slot N from JS. **Deprecated** — see below.
-4. The catalog default, which only slot 1 has.
+3. The catalog default, which only slot 1 has.
 
 Because the palette resolves once at the provider wrapper, a slot set on a chart's *own* element has no effect — the colors were resolved before that element existed. Scope the rule to a wrapper around the chart, or use `options.stroke` for a single series.
 
 <Source
-	language="tsx"
-	code={ `// Deprecated: theme.colors writes the slots from JS.
-	// It still works, but a CSS declaration of a slot outranks it,
-	// and entries past the fifth are dropped with a console warning.
-	<GlobalChartsProvider theme={ { colors: [ '#3858e9', '#007a5a' ] } }>
-		{ /* Prefer setting --a8c-charts-color-series-1 … -5 in CSS. */ }
-	</GlobalChartsProvider>` }
+	language="css"
+	code={ `.my-dashboard {
+		--a8c-charts-color-series-1: #3858e9;
+		--a8c-charts-color-series-2: #007a5a;
+	}` }
 />
 
 ### Stable Colors for Groups
@@ -175,7 +172,7 @@ The context respects explicit color overrides while maintaining group stability 
 
 Series colors work the same way, through the five `--a8c-charts-color-series-*` slots. See [The Series Palette](#the-series-palette).
 
-The `theme` prop's matching color fields are deprecated and will be removed; `TOKENS.md` maps each one to the role that replaces it. What stays on `theme` is everything with no role behind it — `tickLength`, stroke widths, font weights, the heatmap's compact sizing, the annotation geometry:
+The `theme` prop carries no colors at all; `TOKENS.md` maps every removed field to the role that replaces it. What `theme` carries is everything with no role behind it — `tickLength`, stroke widths, font weights, the heatmap's compact sizing, the annotation geometry:
 
 <Source
 	language="tsx"

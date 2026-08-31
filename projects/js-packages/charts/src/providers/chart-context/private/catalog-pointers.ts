@@ -31,7 +31,12 @@ export const CATALOG_POINTERS = {
 	series: SERIES_PALETTE_POINTERS,
 } as const;
 
-/** The annotation parts visx paints, in the shape `@visx/annotation` takes. */
+/**
+ * The annotation parts visx paints, in the shape `@visx/annotation` takes.
+ *
+ * `radius` rides along because it is the base every annotation starts from, and this is what the
+ * theme and the per-datum styles merge on top of.
+ */
 export const ANNOTATION_POINTERS = {
 	label: {
 		anchorLineStroke: CATALOG_POINTERS.annotation,

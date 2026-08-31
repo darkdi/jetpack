@@ -27,7 +27,6 @@ import {
 	useChartId,
 	useChartRegistration,
 	useGlobalChartsContext,
-	useGlobalChartsTheme,
 } from '../../providers';
 import { useDefaultHiddenSeries } from '../../providers/chart-context/hooks/use-default-hidden-series';
 import { attachSubComponents } from '../../utils';
@@ -194,10 +193,9 @@ const LineChartInternal = forwardRef< ChartInstanceRef, LineChartProps >(
 		const legendShape = legend.shape ?? 'line';
 		const legendPosition = legend.position ?? 'bottom';
 
-		const providerTheme = useGlobalChartsTheme();
 		const theme = useXYChartTheme( data );
-		// Gradient stops apply this as an SVG attribute, where CSS var() cannot resolve. useXYChartTheme has already resolved the same role inside its memo, against the chart's scope element, so read it back rather than paying another getComputedStyle on every render.
-		const resolvedBackgroundColor = theme.backgroundColor ?? providerTheme.backgroundColor;
+		// A gradient stop reads its color as a string rather than painting it, so this one has to be resolved. `useXYChartTheme` already did, against the chart's scope element, so read it back rather than paying another getComputedStyle on every render.
+		const resolvedBackgroundColor = theme.backgroundColor;
 		const chartId = useChartId( providedChartId );
 		const hiddenSeries = useDefaultHiddenSeries( chartId, defaultHiddenSeries );
 		const isSeriesVisible = useCallback(

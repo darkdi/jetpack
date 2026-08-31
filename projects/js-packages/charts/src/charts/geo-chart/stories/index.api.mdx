@@ -88,10 +88,12 @@ The color axis range is the first series palette color, set in CSS as `--a8c-cha
 
 The remaining colors are catalog roles, declared in CSS. The `theme` fields that used to carry them are deprecated and now point at the same roles:
 
-| Role | Paints | Deprecated field |
-| ---- | ------ | ---------------- |
-| `--a8c-charts-color-background` | Behind the map | `backgroundColor` |
-| `--a8c-charts-color-surface-secondary` | Countries without data values | `geoChart.featureFillColor` |
+| Role | Paints | Default |
+| ---- | ------ | ------- |
+| `--a8c-charts-color-background` | Behind the map | `#fff` |
+| `--a8c-charts-color-surface-secondary` | Countries without data values | `#f4f4f4` |
+
+Google Charts takes a config object rather than painting the DOM, so both are read as resolved hex at render. A change to either needs a re-render before the map follows it.
 
 ## Country Identification
 

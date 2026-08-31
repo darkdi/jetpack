@@ -1,4 +1,3 @@
-import { GlobalChartsProvider } from '../../../providers';
 import {
 	chartDecorator,
 	sharedChartArgTypes,
@@ -15,6 +14,7 @@ import { PieChart } from '../index';
 import { PieChartUnresponsive } from '../pie-chart';
 import type { ChartLegendConfig, DataPointPercentage } from '../../../types';
 import type { Meta, StoryObj } from '@storybook/react';
+import type { CSSProperties } from 'react';
 
 type StoryArgs = ChartStoryArgs< React.ComponentProps< typeof PieChart > > &
 	LegendStoryControls & {
@@ -95,13 +95,13 @@ const meta: Meta< StoryArgs > = {
 		labelTextColor: {
 			control: { type: 'color' },
 			description:
-				'Color of the label text displayed on pie chart segments. Deprecated — declare `--a8c-charts-color-label-on-fill` instead.',
+				'Color of the label text on pie segments. Sets `--a8c-charts-color-label-on-fill`.',
 			table: { category: 'Labels' },
 		},
 		labelBackgroundColor: {
 			control: { type: 'color' },
 			description:
-				'Background color for labels displayed on pie chart segments. Deprecated — declare `--a8c-charts-color-label-background` instead.',
+				'Background color for labels on pie segments. Sets `--a8c-charts-color-label-background`.',
 			table: { category: 'Labels' },
 		},
 		showLabels: {
@@ -115,15 +115,18 @@ const meta: Meta< StoryArgs > = {
 		const ChartComponent = <PieChart { ...chartProps } legend={ legend } />;
 
 		if ( labelTextColor || labelBackgroundColor ) {
+			// The roles reach the labels through the cascade, so a wrapper inside the provider tree is enough — both are painted, never resolved in JS.
 			return (
-				<GlobalChartsProvider
-					theme={ {
-						labelTextColor,
-						labelBackgroundColor,
-					} }
+				<div
+					style={
+						{
+							'--a8c-charts-color-label-on-fill': labelTextColor,
+							'--a8c-charts-color-label-background': labelBackgroundColor,
+						} as CSSProperties
+					}
 				>
 					{ ChartComponent }
-				</GlobalChartsProvider>
+				</div>
 			);
 		}
 

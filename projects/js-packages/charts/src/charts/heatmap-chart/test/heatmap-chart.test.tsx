@@ -352,16 +352,6 @@ describe( 'HeatmapChart', () => {
 		expect( grid.style.getPropertyValue( '--a8c-charts-color-heatmap-primary' ) ).toBe( '#abcdef' );
 	} );
 
-	test( 'resolves primaryColor from the chart theme', () => {
-		render(
-			<GlobalChartsProvider theme={ { heatmapChart: { primaryColor: '#0a0b0c' } } }>
-				<HeatmapChart width={ 500 } height={ 300 } data={ data } />
-			</GlobalChartsProvider>
-		);
-		const grid = screen.getByRole( 'grid', { name: /heatmap/i } );
-		expect( grid.style.getPropertyValue( '--a8c-charts-color-heatmap-primary' ) ).toBe( '#0a0b0c' );
-	} );
-
 	test( 'falls back to the first palette slot when no prop or theme primaryColor is set', () => {
 		const scope = document.createElement( 'div' );
 		scope.style.setProperty( '--a8c-charts-color-series-1', '#0a0b0c' );

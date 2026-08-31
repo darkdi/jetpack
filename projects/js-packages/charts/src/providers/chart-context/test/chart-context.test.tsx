@@ -6,7 +6,7 @@ import { useChartRegistration } from '../hooks/use-chart-registration';
 import { useGlobalChartsContext } from '../hooks/use-global-charts-context';
 import { defaultTheme } from '../themes';
 import type { BaseLegendItem } from '../../../components/legend';
-import type { ChartTheme, SeriesData } from '../../../types';
+import type { SeriesData } from '../../../types';
 import type { GlobalChartsContextValue } from '../types';
 
 describe( 'ChartContext', () => {
@@ -80,7 +80,7 @@ describe( 'ChartContext', () => {
 			expect( contextValue.isColorPaletteResolved ).toBe( true );
 		} );
 
-		it( 'resolves palette again after theme change', () => {
+		it( 'keeps the palette resolved across a theme change', () => {
 			let contextValue: GlobalChartsContextValue;
 
 			const TestComponent = () => {
@@ -88,15 +88,8 @@ describe( 'ChartContext', () => {
 				return <div>Test</div>;
 			};
 
-			const theme1: Partial< ChartTheme > = {
-				colors: [ '#006DAB', '#1F9828' ],
-			};
-			const theme2: Partial< ChartTheme > = {
-				colors: [ '#FF0000', '#00FF00' ],
-			};
-
 			const { rerender } = render(
-				<GlobalChartsProvider theme={ theme1 }>
+				<GlobalChartsProvider theme={ { tickLength: 4 } }>
 					<TestComponent />
 				</GlobalChartsProvider>
 			);
@@ -104,12 +97,11 @@ describe( 'ChartContext', () => {
 			expect( contextValue.isColorPaletteResolved ).toBe( true );
 
 			rerender(
-				<GlobalChartsProvider theme={ theme2 }>
+				<GlobalChartsProvider theme={ { tickLength: 8 } }>
 					<TestComponent />
 				</GlobalChartsProvider>
 			);
 
-			// After theme change, palette should re-resolve to true
 			expect( contextValue.isColorPaletteResolved ).toBe( true );
 		} );
 

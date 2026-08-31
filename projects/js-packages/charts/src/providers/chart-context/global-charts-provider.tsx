@@ -25,12 +25,10 @@ import {
 import { ChartScopeContext } from '../chart-scope/chart-scope-context';
 import { getChartColor, type ColorCache } from './private/get-chart-color';
 import { SERIES_PALETTE_POINTERS } from './private/series-palette';
-import { themeOverrideVars } from './private/theme-override-vars';
-import { withCatalogPointers } from './private/with-catalog-pointers';
 import { defaultTheme } from './themes';
 import type { GlobalChartsContextValue, ChartRegistration } from './types';
 import type { ChartTheme, CompleteChartTheme } from '../../types';
-import type { CSSProperties, FC, ReactNode } from 'react';
+import type { FC, ReactNode } from 'react';
 
 export const GlobalChartsContext = createContext< GlobalChartsContextValue | null >( null );
 
@@ -59,19 +57,10 @@ export const GlobalChartsProvider: FC< GlobalChartsProviderProps > = ( { childre
 		setScopeNode( node );
 	}, [] );
 
-	// themeOverrideVars reads the raw `theme` prop, never `providerTheme` — feeding it the restored theme below would make an overridden role's pointer look like a self-reference and drop the var (see themeOverrideVars' own doc comment).
-	const { vars: overrideVars, roles: overriddenRoles } = useMemo(
-		() => themeOverrideVars( theme ),
+	const providerTheme: CompleteChartTheme = useMemo(
+		() => ( theme ? mergeThemes( defaultTheme, theme ) : defaultTheme ),
 		[ theme ]
 	);
-
-	const providerTheme: CompleteChartTheme = useMemo( () => {
-		if ( ! theme ) {
-			return defaultTheme;
-		}
-
-		return withCatalogPointers( mergeThemes( defaultTheme, theme ), overriddenRoles );
-	}, [ theme, overriddenRoles ] );
 
 	// Cache expensive color computations that only change when theme colors change
 	// Using useState + useLayoutEffect instead of useMemo to ensure CSS variables
@@ -153,12 +142,9 @@ export const GlobalChartsProvider: FC< GlobalChartsProviderProps > = ( { childre
 		() => new Map()
 	);
 
-	// Reset group color mappings when the resolved palette changes.
-	//
-	// Keyed on the resolved colors rather than on `providerTheme.colors`, which holds five
-	// catalog pointers and so does not move with a `theme.colors` change — a consumer's colors
-	// reach the palette through the theme-layer vars on the wrapper. Keying on content also stops
-	// a consumer passing an inline `theme` object from resetting the map on every render.
+	// Reset group color mappings when the resolved palette changes. Keyed on the resolved colors
+	// rather than the cache object so a consumer passing an inline `theme` cannot reset the map on
+	// every render.
 	const paletteKey = colorCache.colors.join( ',' );
 
 	useEffect( () => {
@@ -395,7 +381,7 @@ export const GlobalChartsProvider: FC< GlobalChartsProviderProps > = ( { childre
 				ref={ setWrapperNode }
 				className={ CHART_SCOPE_CLASS }
 				data-testid="charts-scope"
-				style={ { display: 'contents', ...overrideVars } as CSSProperties }
+				style={ { display: 'contents' } }
 			>
 				<ChartScopeContext.Provider value={ scopeNode }>{ children }</ChartScopeContext.Provider>
 			</div>

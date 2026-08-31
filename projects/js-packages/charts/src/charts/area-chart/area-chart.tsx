@@ -25,7 +25,6 @@ import {
 	useChartId,
 	useChartRegistration,
 	useGlobalChartsContext,
-	useGlobalChartsTheme,
 } from '../../providers';
 import { useDefaultHiddenSeries } from '../../providers/chart-context/hooks/use-default-hidden-series';
 import { attachSubComponents } from '../../utils';
@@ -87,7 +86,6 @@ const AreaChartInternal = forwardRef< ChartInstanceRef, AreaChartProps >(
 		// New prop wins; fall back to the deprecated `rescaleYOnLegendToggle`; default to rescaling.
 		const rescaleYOnVisibility = rescaleYOnVisibilityChange ?? rescaleYOnLegendToggle ?? true;
 
-		const providerTheme = useGlobalChartsTheme();
 		const theme = useXYChartTheme( data );
 		const chartId = useChartId( providedChartId );
 		const hiddenSeries = useDefaultHiddenSeries( chartId, defaultHiddenSeries );
@@ -483,7 +481,7 @@ const AreaChartInternal = forwardRef< ChartInstanceRef, AreaChartProps >(
 														stackOffset={ stackOffset }
 														getElementStyles={ getElementStyles }
 														// useXYChartTheme resolved this role inside its memo, against the chart's scope element; reading it back avoids a getComputedStyle on every render.
-														strokeColor={ theme.backgroundColor ?? providerTheme.backgroundColor }
+														strokeColor={ theme.backgroundColor }
 													/>
 												</>
 											) }

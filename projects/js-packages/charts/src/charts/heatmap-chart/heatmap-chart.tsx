@@ -81,7 +81,7 @@ const HeatmapChartInternal: FC< HeatmapChartProps > = ( {
 
 	const { color: primaryColorHex } = getElementStyles( {
 		index: 0,
-		overrideColor: primaryColor || heatmapChartSettings.primaryColor,
+		overrideColor: primaryColor,
 	} );
 
 	// Resolve the background against this chart's own scope element (not the provider's), matching where `--a8c-charts-color-heatmap-background` is substituted for the cell blend below — a chart-level override otherwise disagrees with a provider-level read.

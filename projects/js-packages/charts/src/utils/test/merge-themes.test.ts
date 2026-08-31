@@ -3,29 +3,24 @@ import type { ChartTheme } from '../../types';
 
 describe( 'mergeThemes', () => {
 	const baseTheme: ChartTheme = {
-		backgroundColor: '#FFFFFF',
-		colors: [ '#red', '#blue' ],
 		gridStyles: {
-			stroke: '#DCDCDE',
 			strokeWidth: 1,
 		},
 		tickLength: 4,
+		seriesLineStyles: [ { strokeWidth: 1 }, { strokeWidth: 2 } ],
 		leaderboardChart: {
-			primaryColor: '#global-primary',
-			secondaryColor: '#global-secondary',
+			rowGap: 12,
+			columnGap: 4,
 		},
 	};
 
 	const overrideTheme: ChartTheme = {
-		backgroundColor: '#F0F0F0',
-		colors: [ '#green', '#yellow' ],
 		gridStyles: {
-			stroke: '#000000',
 			strokeWidth: 2,
 		},
 		tickLength: 8,
 		leaderboardChart: {
-			primaryColor: '#local-primary',
+			rowGap: 20,
 		},
 	};
 
@@ -37,58 +32,41 @@ describe( 'mergeThemes', () => {
 	it( 'should merge themes with local theme taking precedence for top-level properties', () => {
 		const result = mergeThemes( baseTheme, overrideTheme );
 
-		expect( result.backgroundColor ).toBe( '#F0F0F0' ); // from local
-		expect( result.tickLength ).toBe( 8 ); // from local
-		expect( result.colors ).toEqual( [ '#green', '#yellow' ] ); // from local (array replacement)
+		expect( result.tickLength ).toBe( 8 );
 	} );
 
 	it( 'should deeply merge nested objects with local theme taking precedence', () => {
 		const result = mergeThemes( baseTheme, overrideTheme );
 
-		// gridStyles should be merged
-		expect( result.gridStyles ).toEqual( {
-			stroke: '#000000', // from local
-			strokeWidth: 2, // from local
-		} );
+		expect( result.gridStyles ).toEqual( { strokeWidth: 2 } );
 
-		// leaderboardChart should be merged
 		expect( result.leaderboardChart ).toEqual( {
-			primaryColor: '#local-primary', // from local
-			secondaryColor: '#global-secondary', // from global (not overridden)
+			rowGap: 20, // from local
+			columnGap: 4, // from global (not overridden)
 		} );
 	} );
 
 	it( 'should use global theme properties when not defined in local theme', () => {
 		const partialLocalTheme: ChartTheme = {
-			backgroundColor: '#F0F0F0',
-			colors: [ '#green' ],
 			tickLength: 8,
 		};
 
 		const result = mergeThemes( baseTheme, partialLocalTheme );
 
-		expect( result.backgroundColor ).toBe( '#F0F0F0' ); // from local
-		expect( result.gridStyles ).toEqual( baseTheme.gridStyles ); // from global
-		expect( result.leaderboardChart ).toEqual( baseTheme.leaderboardChart ); // from global
+		expect( result.tickLength ).toBe( 8 );
+		expect( result.gridStyles ).toEqual( baseTheme.gridStyles );
+		expect( result.leaderboardChart ).toEqual( baseTheme.leaderboardChart );
 	} );
 
 	it( 'should handle array replacement correctly', () => {
-		const globalWithColors: ChartTheme = {
-			...baseTheme,
-			colors: [ '#red', '#blue', '#purple' ],
-		};
-
-		const localWithFewerColors: ChartTheme = {
+		const localWithFewerStyles: ChartTheme = {
 			...overrideTheme,
-			colors: [ '#green' ],
+			seriesLineStyles: [ { strokeWidth: 5 } ],
 		};
 
-		const result = mergeThemes( globalWithColors, localWithFewerColors );
+		const result = mergeThemes( baseTheme, localWithFewerStyles );
 
 		// Arrays should be replaced, not concatenated
-		expect( result.colors ).toEqual( [ '#green' ] );
-		expect( result.colors ).not.toContain( '#red' );
-		expect( result.colors ).not.toContain( '#blue' );
-		expect( result.colors ).not.toContain( '#purple' );
+		expect( result.seriesLineStyles ).toEqual( [ { strokeWidth: 5 } ] );
 	} );
 } );
