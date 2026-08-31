@@ -9,11 +9,11 @@ import {
 	ChartScopeContext,
 	useChartId,
 	useChartRegistration,
-	useGlobalChartsTheme,
 	useGlobalChartsContext,
 } from '../../providers';
+import { CATALOG_POINTERS } from '../../providers/chart-context/private/catalog-pointers';
 import { CHART_SCOPE_CLASS } from '../../styles/chart-scope-class';
-import { formatPercentage, hexToRgba } from '../../utils';
+import { formatPercentage } from '../../utils';
 import styles from './conversion-funnel-chart.module.scss';
 import { useFunnelSelection } from './private';
 import type { FunnelStep, ConversionFunnelChartProps } from './types';
@@ -53,7 +53,6 @@ const ConversionFunnelChartInternal: FC< ConversionFunnelChartProps > = ( {
 	renderTooltip,
 } ) => {
 	const chartId = useChartId( providedChartId );
-	const { conversionFunnelChart: conversionFunnelChartSettings } = useGlobalChartsTheme();
 	const { getElementStyles, isColorPaletteResolved } = useGlobalChartsContext();
 	const chartRef = useRef< HTMLDivElement >( null );
 	const selectedBarRef = useRef< HTMLDivElement | null >( null );
@@ -246,25 +245,15 @@ const ConversionFunnelChartInternal: FC< ConversionFunnelChartProps > = ( {
 	// Resolve height: explicit height prop > style.height > default 100%
 	const resolvedHeight = height ?? style?.height ?? '100%';
 
-	// Get component settings from theme with fallbacks
-	const { primaryColor, backgroundColor, positiveChangeColor, negativeChangeColor } =
-		conversionFunnelChartSettings;
-
-	// Resolve bar color using getElementStyles with primaryColor as override
+	// The bar takes the first palette slot; move `--a8c-charts-color-series-1` to change it.
 	const { color: barColor } = getElementStyles
-		? getElementStyles( {
-				index: 0,
-				overrideColor: primaryColor,
-		  } )
-		: { color: primaryColor || '#000000' };
+		? getElementStyles( { index: 0 } )
+		: { color: '#000000' };
 
-	// Determine change indicator color
 	const isPositiveChange = changeIndicator?.startsWith( '+' );
-	const changeColor = isPositiveChange ? positiveChangeColor : negativeChangeColor;
+	const changeColor = isPositiveChange ? CATALOG_POINTERS.trendUp : CATALOG_POINTERS.trendDown;
 
-	// Create light background version of primary color if not set
-	const barBackgroundColor =
-		backgroundColor || hexToRgba( barColor, 0.08 ) || 'rgba(0, 0, 0, 0.08)';
+	const barBackgroundColor = CATALOG_POINTERS.surfaceSecondary;
 
 	// Default main metric rendering function
 	const renderDefaultMainMetric = () => (

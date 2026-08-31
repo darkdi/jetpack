@@ -15,6 +15,7 @@ import {
 	useGlobalChartsContext,
 	useGlobalChartsTheme,
 } from '../../providers';
+import { DELTA_POINTERS } from '../../providers/chart-context/private/catalog-pointers';
 import { formatMetricValue, attachSubComponents } from '../../utils';
 import { useChartChildren } from '../private/chart-composition';
 import { ChartInstanceContext } from '../private/chart-instance-context';
@@ -198,22 +199,15 @@ const LeaderboardChartInternal: FC< LeaderboardChartProps > = ( {
 
 	// Process children to extract compound components
 	const { legendChildren, nonLegendChildren } = useChartChildren( children, 'LeaderboardChart' );
-	const {
-		labelSpacing,
-		rowGap,
-		columnGap,
-		primaryColor: settingsPrimaryColor,
-		secondaryColor: settingsSecondaryColor,
-		deltaColors,
-	} = leaderboardChartSettings;
+	const { labelSpacing, rowGap, columnGap } = leaderboardChartSettings;
 	const { getElementStyles, isSeriesVisible } = useGlobalChartsContext();
 	const { color: resolvedPrimaryColor } = getElementStyles( {
 		index: 0,
-		overrideColor: primaryColor || settingsPrimaryColor,
+		overrideColor: primaryColor,
 	} );
 	const { color: resolvedSecondaryColor } = getElementStyles( {
 		index: 1,
-		overrideColor: secondaryColor || settingsSecondaryColor,
+		overrideColor: secondaryColor,
 	} );
 
 	// Create legend items using the custom hook
@@ -390,7 +384,7 @@ const LeaderboardChartInternal: FC< LeaderboardChartProps > = ( {
 								const showComparisonValue = showComparisonColumn && hasDelta;
 								const showComparisonPlaceholder = showComparisonColumn && ! hasDelta;
 								const colorIndex = showComparisonValue ? Math.sign( entry.delta ) + 1 : 1;
-								const deltaColor = deltaColors[ colorIndex ];
+								const deltaColor = DELTA_POINTERS[ colorIndex ];
 
 								const rowCells = (
 									<>

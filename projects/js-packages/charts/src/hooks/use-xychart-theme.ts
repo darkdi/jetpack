@@ -1,6 +1,7 @@
 import { buildChartTheme } from '@visx/xychart';
 import { useMemo } from 'react';
 import { useGlobalChartsTheme } from '../providers';
+import { CATALOG_POINTERS } from '../providers/chart-context/private/catalog-pointers';
 import { useChartScopeElement } from '../providers/chart-scope';
 import { createCssVariableResolver } from '../utils';
 import type { SeriesData } from '../types';
@@ -26,23 +27,28 @@ export const useXYChartTheme = ( data: SeriesData[] ) => {
 
 		const seriesColors: string[] = JSON.parse( seriesColorKey );
 
-		// The palette gets the same treatment as every other color here, and needs it more: `theme.colors` is the one field that is always a `var()` chain, and the four slots without a catalog default resolve to nothing at all. visx builds its `colorScale` from this array and uses it as the default stroke for a series rendered without an explicit one, so an unresolved entry paints nothing rather than degrading. Entries that resolve to nothing are dropped so the scale compacts the way the provider's own palette does.
-		const paletteColors = [ ...seriesColors, ...( theme.colors ?? [] ) ]
+		// The palette is the one place a pointer has to be resolved: visx builds its `colorScale` from this array and uses it as the default stroke for a series rendered without an explicit one, so an unresolved entry paints nothing rather than degrading. Slots past the first have no catalog default and resolve to nothing until a consumer sets them; those are dropped so the scale compacts instead of repeating a color.
+		const paletteColors = [ ...seriesColors, ...CATALOG_POINTERS.series ]
 			.map( color => resolveColor( color ) )
 			.filter( ( color ): color is string => Boolean( color ) && ! color.includes( 'var(' ) );
 
 		// The tooltip is painted in a portal outside the scope, and visx concatenates this color into a `box-shadow` where a chain cannot take a suffix; see TOKENS.md#the-svg-bridge. Passing it explicitly leaves `svgLabelSmall.fill`, which visx derives it from, a chain for the SVG tick labels.
-		const htmlLabelColor = resolveColor( theme.svgLabelSmall?.fill );
+		const htmlLabelColor = resolveColor( CATALOG_POINTERS.labelAxis );
 
-		// The grid, axis, tick and label colors are spread through untouched, and that is the whole mechanism: visx writes each one onto the element it paints — as an inline style for the grid, a presentation attribute elsewhere — and a `var()` chain resolves there natively. So the role is read at the painted element rather than snapshot at the provider wrapper, which is what makes an override on a chart's own class work, keeps a theme change live without a re-render, and leaves nothing to resolve during SSR. Resolving them here would freeze the color instead.
+		// Every painted color reaches visx as its catalog pointer, and that is the whole mechanism: visx writes each one onto the element it paints — an inline style for the grid, a presentation attribute elsewhere — and a `var()` chain resolves there natively. So the role is read at the painted element rather than snapshot at the provider wrapper, which is what makes an override on a chart's own class work, keeps a theme change live without a re-render, and leaves nothing to resolve during SSR. Resolving one here would freeze it instead.
+		//
 		// visx paints the y axis line and y tick marks from `gridColor`, and offers no y-specific field to override it the way `xAxisLineStyles` overrides the x side. An empty string is what leaves them unpainted, which is the design: the y axis carries labels only. `gridColorDark` seeds the x axis line, which `xAxisLineStyles` then overrides, but visx's config type requires it.
 		return buildChartTheme( {
 			...theme,
 			gridColor: '',
 			gridColorDark: '',
 			colors: paletteColors,
-			backgroundColor: resolveColor( theme.backgroundColor ),
+			backgroundColor: resolveColor( CATALOG_POINTERS.background ),
 			htmlLabel: htmlLabelColor ? { color: htmlLabelColor } : undefined,
+			gridStyles: { ...theme.gridStyles, stroke: CATALOG_POINTERS.grid },
+			xAxisLineStyles: { ...theme.xAxisLineStyles, stroke: CATALOG_POINTERS.axis },
+			xTickLineStyles: { ...theme.xTickLineStyles, stroke: CATALOG_POINTERS.tick },
+			svgLabelSmall: { ...theme.svgLabelSmall, fill: CATALOG_POINTERS.labelAxis },
 		} );
 	}, [ theme, seriesColorKey, scopeElement ] );
 };

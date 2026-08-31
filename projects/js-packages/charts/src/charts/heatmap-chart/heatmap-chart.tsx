@@ -10,6 +10,7 @@ import {
 	useGlobalChartsContext,
 	GlobalChartsContext,
 } from '../../providers';
+import { CATALOG_POINTERS } from '../../providers/chart-context/private/catalog-pointers';
 import { CHART_SCOPE_CLASS } from '../../styles/chart-scope-class';
 import { attachSubComponents } from '../../utils';
 import {
@@ -85,7 +86,7 @@ const HeatmapChartInternal: FC< HeatmapChartProps > = ( {
 
 	// Resolve the background against this chart's own scope element (not the provider's), matching where `--a8c-charts-color-heatmap-background` is substituted for the cell blend below — a chart-level override otherwise disagrees with a provider-level read.
 	const chartBackgroundHex = normalizeColorToHex(
-		theme.backgroundColor,
+		CATALOG_POINTERS.background,
 		scopeElement,
 		resolveCssVariable
 	);
@@ -296,7 +297,7 @@ const HeatmapChartInternal: FC< HeatmapChartProps > = ( {
 		: `minmax(${ minCellHeight ?? 0 }px, ${ maxCellHeight ? `${ maxCellHeight }px` : '1fr' })`;
 	const gridStyle: Record< string, string | number > = {
 		'--a8c-charts-color-heatmap-primary': primaryColorHex,
-		'--a8c-charts-color-heatmap-background': theme.backgroundColor,
+		'--a8c-charts-color-heatmap-background': CATALOG_POINTERS.background,
 		gridTemplateColumns: `auto repeat(${ columns }, ${ columnTrack })`,
 		gridTemplateRows: `auto repeat(${ rows }, ${ rowTrack })`,
 	};

@@ -88,14 +88,16 @@ export const GlobalChartsProvider: FC< GlobalChartsProviderProps > = ( { childre
 	// Useful for animations that should only run after the color palette is resolved
 	const [ isColorPaletteResolved, setIsColorPaletteResolved ] = useState( false );
 
-	// Compute color cache after DOM is updated (so CSS variables are available)
-	// Resolves CSS variables from the wrapper element's scope to handle scoped variables
-	// Note: Only re-runs when providerTheme changes, not when wrapper element changes.
-	// This is intentional, as wrapperRef is expected to be stable for the lifetime of the provider.
-	// A remount is not a gap in that: effects always run on mount, so a new instance resolves
-	// against its own node. Only a node swap *within* one instance would go unseen, and the catalog
-	// is declared on the `.a8c-charts-scope` class rather than on a particular element, so the
-	// replacement carries the same computed values anyway.
+	// Seed the color cache once the DOM exists, so the palette slots have something to resolve
+	// against. A layout effect rather than a memo because the catalog reaches the wrapper as a
+	// stylesheet, which must be applied before `getComputedStyle` can answer.
+	//
+	// Runs on mount only, and depends on nothing: the slots are a fixed manifest, and wrapperRef is
+	// stable for the lifetime of the provider. A remount is not a gap — effects always run on mount,
+	// so a new instance resolves against its own node. Only a node swap *within* one instance would
+	// go unseen, and the catalog is declared on the `.a8c-charts-scope` class rather than on a
+	// particular element, so the replacement carries the same computed values anyway.
+
 	useLayoutEffect( () => {
 		setIsColorPaletteResolved( false );
 		const resolvedColors: string[] = [];
@@ -104,13 +106,7 @@ export const GlobalChartsProvider: FC< GlobalChartsProviderProps > = ( { childre
 		let minHue = 360;
 		let maxHue = 0;
 
-		// Resolved from the theme rather than from `SERIES_PALETTE_POINTERS`, and it has to be. In a
-		// browser the two are equivalent — both name the same slots, and the wrapper's theme-layer
-		// vars answer either. But `withCatalogPointers` puts the consumer's own color in each
-		// pointer's terminal position, and that literal is the only carrier for the palette where
-		// `getComputedStyle` resolves nothing: SSR and jsdom. Walking the manifest instead makes
-		// every consumer palette collapse to the catalog seed there.
-		for ( const color of providerTheme.colors ?? SERIES_PALETTE_POINTERS ) {
+		for ( const color of SERIES_PALETTE_POINTERS ) {
 			// Normalize color to hex format, handling CSS variables, RGB, HSL, etc.
 			// This uses normalizeColorToHex which resolves CSS variables and converts
 			// rgb(), rgba(), hsl() formats to hex
@@ -145,7 +141,7 @@ export const GlobalChartsProvider: FC< GlobalChartsProviderProps > = ( { childre
 			minHue,
 			maxHue,
 		} );
-	}, [ providerTheme ] );
+	}, [] );
 
 	useEffect( () => {
 		if ( colorCache.colors.length > 0 ) {

@@ -9,11 +9,13 @@ import {
 import { DataContext } from '@visx/xychart';
 import merge from 'deepmerge';
 import { useContext, useRef, useEffect, useState, useMemo } from 'react';
-import { useChartScopeElement, useGlobalChartsTheme } from '../../../providers';
-import { isSafari, resolveCssVariable } from '../../../utils';
+import { useGlobalChartsTheme } from '../../../providers';
+import { ANNOTATION_POINTERS } from '../../../providers/chart-context/private/catalog-pointers';
+import { isSafari } from '../../../utils';
 import LineChartAnnotationLabelWithPopover, {
 	POPOVER_BUTTON_SIZE,
 } from './line-chart-annotation-label-popover';
+import type { AnnotationStyles } from '../../../types';
 import type { LineChartAnnotationProps } from '../types';
 import type { LabelProps } from '@visx/annotation';
 import type { TextProps } from '@visx/text';
@@ -152,17 +154,18 @@ const LineChartAnnotation: FC< LineChartAnnotationProps > = ( {
 	renderLabelPopover,
 } ) => {
 	const providerTheme = useGlobalChartsTheme();
-	const scopeElement = useChartScopeElement();
 	const { xScale, yScale } = useContext( DataContext ) || {};
 	const labelRef = useRef< SVGGElement >( null );
 	const [ height, setHeight ] = useState< number | null >( null );
 
-	// Deep merge styles to preserve nested object properties
-	const styles = merge( providerTheme.annotationStyles ?? {}, datumStyles ?? {} );
-
-	// visx annotation parts apply these colours as SVG presentation attributes, where CSS var() cannot resolve. Resolve against the chart's scope element, never :root.
-	const resolveColor = ( value?: string ): string | undefined =>
-		value ? resolveCssVariable( value, scopeElement ) ?? value : value;
+	// Deep merge styles to preserve nested object properties. The catalog pointers go in first so a
+	// per-datum color still wins; each reaches visx as a `var()` chain and resolves at the element
+	// it paints, which is what lets an override set on the chart apply.
+	const styles = merge.all( [
+		ANNOTATION_POINTERS,
+		providerTheme.annotationStyles ?? {},
+		datumStyles ?? {},
+	] ) as AnnotationStyles;
 
 	// Measure the label height once after initial render
 	useEffect( () => {
@@ -269,14 +272,8 @@ const LineChartAnnotation: FC< LineChartAnnotationProps > = ( {
 	return (
 		<g data-testid={ testId }>
 			<Annotation x={ x } y={ y } dx={ dx } dy={ dy }>
-				<Connector { ...styles?.connector } stroke={ resolveColor( styles?.connector?.stroke ) } />
-				{ subjectType === 'circle' && (
-					<CircleSubject
-						{ ...styles?.circleSubject }
-						fill={ resolveColor( styles?.circleSubject?.fill ) }
-						stroke={ resolveColor( styles?.circleSubject?.stroke ) }
-					/>
-				) }
+				<Connector { ...styles?.connector } />
+				{ subjectType === 'circle' && <CircleSubject { ...styles?.circleSubject } /> }
 				{ subjectType === 'line-vertical' && (
 					<LineSubject
 						min={ yMax }
@@ -312,8 +309,6 @@ const LineChartAnnotation: FC< LineChartAnnotationProps > = ( {
 							title={ title }
 							subtitle={ subtitle }
 							{ ...styles?.label }
-							anchorLineStroke={ resolveColor( styles?.label?.anchorLineStroke ) }
-							backgroundFill={ resolveColor( styles?.label?.backgroundFill ) }
 							{ ...labelPosition }
 							horizontalAnchor={ getHorizontalAnchor( subjectType, isFlippedHorizontally ) }
 							verticalAnchor={ getVerticalAnchor(

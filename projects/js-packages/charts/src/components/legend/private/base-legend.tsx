@@ -15,6 +15,7 @@ import {
 import { ChartInstanceContext } from '../../../charts/private/chart-instance-context';
 import { useTextTruncation } from '../../../hooks';
 import { GlobalChartsContext, useGlobalChartsTheme } from '../../../providers';
+import { CATALOG_POINTERS } from '../../../providers/chart-context/private/catalog-pointers';
 import { useStandaloneScopeClass } from '../../../providers/chart-scope';
 import { valueOrIdentity, valueOrIdentityString, labelTransformFactory } from '../utils';
 import styles from './base-legend.module.scss';
@@ -323,6 +324,7 @@ export const BaseLegend: ForwardRefExoticComponent<
 										style={ {
 											flex: labelFlex,
 											margin: labelMargin,
+											color: CATALOG_POINTERS.label,
 											...theme.legend?.labelStyles,
 										} }
 									>
