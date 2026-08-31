@@ -29,6 +29,14 @@
 	font-weight: var(--wpds-typography-font-weight-emphasis, 600);
 	line-height: var(--wpds-typography-line-height-sm, 20px);
 	margin: 0;
+
+	&--positive {
+		color: var(--a8c-charts-color-trend-up);
+	}
+
+	&--negative {
+		color: var(--a8c-charts-color-trend-down);
+	}
 }
 
 .funnel-container {
@@ -73,6 +81,7 @@
 .bar-container {
 	flex: 1;
 	border-radius: var(--a8c-charts-border-radius-bar);
+	background-color: var(--a8c-charts-color-surface-secondary);
 	position: relative;
 	cursor: pointer;
 }

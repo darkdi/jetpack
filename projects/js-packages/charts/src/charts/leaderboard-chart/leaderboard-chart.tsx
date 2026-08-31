@@ -15,7 +15,6 @@ import {
 	useGlobalChartsContext,
 	useGlobalChartsTheme,
 } from '../../providers';
-import { DELTA_POINTERS } from '../../providers/chart-context/private/catalog-pointers';
 import { formatMetricValue, attachSubComponents } from '../../utils';
 import { useChartChildren } from '../private/chart-composition';
 import { ChartInstanceContext } from '../private/chart-instance-context';
@@ -33,6 +32,9 @@ import type { LeaderboardEntry } from '../../types';
  * @param value - The numeric value to format
  * @return Formatted string representation of the value
  */
+/** Indexed by `Math.sign( delta ) + 1`, so [negative, neutral, positive]. */
+const DELTA_TREND_CLASS = [ 'deltaValue--down', 'deltaValue--neutral', 'deltaValue--up' ] as const;
+
 const defaultValueFormatter = ( value: number ): string => {
 	return formatMetricValue( value, 'number', {
 		useMultipliers: true,
@@ -383,8 +385,11 @@ const LeaderboardChartInternal: FC< LeaderboardChartProps > = ( {
 								const hasDelta = hasDeltaValue( entry );
 								const showComparisonValue = showComparisonColumn && hasDelta;
 								const showComparisonPlaceholder = showComparisonColumn && ! hasDelta;
-								const colorIndex = showComparisonValue ? Math.sign( entry.delta ) + 1 : 1;
-								const deltaColor = DELTA_POINTERS[ colorIndex ];
+								// Math.sign gives -1/0/1; the placeholder has no delta to read, so it takes neutral.
+								const deltaTrendClass =
+									styles[
+										DELTA_TREND_CLASS[ showComparisonValue ? Math.sign( entry.delta ) + 1 : 1 ]
+									];
 
 								const rowCells = (
 									<>
@@ -411,15 +416,18 @@ const LeaderboardChartInternal: FC< LeaderboardChartProps > = ( {
 											{ isPrimaryVisible && <Text>{ valueFormatter( entry.currentValue ) }</Text> }
 
 											{ showComparisonValue && (
-												<Text className={ styles.deltaValue } style={ { color: deltaColor } }>
+												<Text className={ clsx( styles.deltaValue, deltaTrendClass ) }>
 													{ deltaFormatter( entry.delta ) }
 												</Text>
 											) }
 
 											{ showComparisonPlaceholder && (
 												<Text
-													className={ clsx( styles.deltaValue, styles.deltaPlaceholder ) }
-													style={ { color: deltaColor } }
+													className={ clsx(
+														styles.deltaValue,
+														styles.deltaPlaceholder,
+														deltaTrendClass
+													) }
 												>
 													<span aria-hidden="true">—</span>
 													<VisuallyHidden as="span">

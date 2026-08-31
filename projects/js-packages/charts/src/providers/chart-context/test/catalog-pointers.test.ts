@@ -1,4 +1,4 @@
-import { ANNOTATION_POINTERS, CATALOG_POINTERS, DELTA_POINTERS } from '../private/catalog-pointers';
+import { ANNOTATION_POINTERS, CATALOG_POINTERS } from '../private/catalog-pointers';
 import { defaultTheme } from '../themes';
 
 const flatten = ( value: unknown ): string[] => {
@@ -14,11 +14,7 @@ const flatten = ( value: unknown ): string[] => {
 	return [];
 };
 
-const pointerStrings = [
-	...flatten( CATALOG_POINTERS ),
-	...flatten( ANNOTATION_POINTERS ),
-	...flatten( DELTA_POINTERS ),
-];
+const pointerStrings = [ ...flatten( CATALOG_POINTERS ), ...flatten( ANNOTATION_POINTERS ) ];
 
 describe( 'catalog pointers', () => {
 	it( 'holds no --wpds-* mapping — that lives only in the catalog stylesheet', () => {

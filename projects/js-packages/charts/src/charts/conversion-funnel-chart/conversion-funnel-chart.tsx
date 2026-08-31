@@ -251,16 +251,20 @@ const ConversionFunnelChartInternal: FC< ConversionFunnelChartProps > = ( {
 		: { color: '#000000' };
 
 	const isPositiveChange = changeIndicator?.startsWith( '+' );
+	// Only for `renderMainMetric`, which hands a consumer's own markup something to paint with. The default markup below picks a class instead — the stylesheet owns the color.
 	const changeColor = isPositiveChange ? CATALOG_POINTERS.trendUp : CATALOG_POINTERS.trendDown;
-
-	const barBackgroundColor = CATALOG_POINTERS.surfaceSecondary;
 
 	// Default main metric rendering function
 	const renderDefaultMainMetric = () => (
 		<>
 			<span className={ styles[ 'main-rate' ] }>{ formatPercentage( mainRate ) }</span>
 			{ changeIndicator && (
-				<span className={ styles[ 'change-indicator' ] } style={ { color: changeColor } }>
+				<span
+					className={ clsx(
+						styles[ 'change-indicator' ],
+						styles[ isPositiveChange ? 'change-indicator--positive' : 'change-indicator--negative' ]
+					) }
+				>
 					{ changeIndicator }
 				</span>
 			) }
@@ -413,7 +417,6 @@ const ConversionFunnelChartInternal: FC< ConversionFunnelChartProps > = ( {
 										role="button"
 										tabIndex={ isBlurred ? -1 : 0 }
 										aria-label={ step.label }
-										style={ { backgroundColor: barBackgroundColor } }
 									>
 										<div
 											className={ clsx( styles[ 'funnel-bar' ], {
