@@ -1,35 +1,30 @@
-import { SERIES_PALETTE_POINTERS } from './private/series-palette';
+import { ANNOTATION_POINTERS, CATALOG_POINTERS, DELTA_POINTERS } from './private/catalog-pointers';
 import type { CompleteChartTheme } from '../../types';
 
 /**
  * Default theme configuration
  */
 const defaultTheme: CompleteChartTheme = {
-	backgroundColor: 'var(--a8c-charts-color-background, #fff)',
-	labelBackgroundColor: 'var(--a8c-charts-color-label-background, transparent)',
-	// White label text sits on top of arbitrary series colors, so it has no WPDS content-foreground equivalent. Every other color here is a bare pointer at the catalog emitted by `chart-scope.scss`; the terminal literal is the last resort for the SSR and jsdom paths, where getComputedStyle resolves nothing.
-	labelTextColor: 'var(--a8c-charts-color-label-on-fill, #FFFFFF)',
-	// Derived, not authored: the slot manifest lives in `private/series-palette.ts` because which
-	// slots exist describes the catalog, not the theme. The field itself is still load-bearing —
-	// see that file for why the provider reads the palette through the theme and what has to move
-	// before this can be deleted.
-	colors: [ ...SERIES_PALETTE_POINTERS ],
+	backgroundColor: CATALOG_POINTERS.background,
+	labelBackgroundColor: CATALOG_POINTERS.labelBackground,
+	labelTextColor: CATALOG_POINTERS.labelOnFill,
+	colors: [ ...CATALOG_POINTERS.series ],
 	gridStyles: {
-		stroke: 'var(--a8c-charts-color-grid, #dbdbdb)',
+		stroke: CATALOG_POINTERS.grid,
 		strokeWidth: 1,
 	},
 	tickLength: 4,
 	xTickLineStyles: {
-		stroke: 'var(--a8c-charts-color-tick, #dbdbdb)',
+		stroke: CATALOG_POINTERS.tick,
 		strokeWidth: 1,
 	},
 	xAxisLineStyles: {
-		stroke: 'var(--a8c-charts-color-axis, #dbdbdb)',
+		stroke: CATALOG_POINTERS.axis,
 		strokeWidth: 1,
 	},
 	legend: {
 		labelStyles: {
-			color: 'var(--a8c-charts-color-label, #1e1e1e)',
+			color: CATALOG_POINTERS.label,
 		},
 		containerStyles: {},
 		shapeStyles: [],
@@ -42,42 +37,28 @@ const defaultTheme: CompleteChartTheme = {
 	// elements for axis labels and ticks. Setting `inherit` lets SVG text
 	// pick up the host application's font-family via normal CSS inheritance.
 	svgLabelSmall: {
-		fill: 'var(--a8c-charts-color-label-axis, #1e1e1e)',
+		fill: CATALOG_POINTERS.labelAxis,
 		fontFamily: 'inherit',
 	},
 	svgLabelBig: { fontFamily: 'inherit' },
 	annotationStyles: {
-		label: {
-			anchorLineStroke: 'var(--a8c-charts-color-annotation, #1e1e1e)',
-			backgroundFill: 'var(--a8c-charts-color-surface, #fff)',
-		},
-		connector: {
-			stroke: 'var(--a8c-charts-color-annotation, #1e1e1e)',
-		},
-		circleSubject: {
-			stroke: 'transparent',
-			fill: 'var(--a8c-charts-color-annotation, #1e1e1e)',
-			radius: 5,
-		},
+		label: { ...ANNOTATION_POINTERS.label },
+		connector: { ...ANNOTATION_POINTERS.connector },
+		circleSubject: { ...ANNOTATION_POINTERS.circleSubject },
 	},
 	geoChart: {
-		featureFillColor: 'var(--a8c-charts-color-surface-secondary, #f4f4f4)',
+		featureFillColor: CATALOG_POINTERS.surfaceSecondary,
 	},
 	leaderboardChart: {
 		rowGap: 12,
 		columnGap: 4,
 		labelSpacing: 'xs',
-		// [negative, neutral, positive]
-		deltaColors: [
-			'var(--a8c-charts-color-trend-down, #cc1818)',
-			'var(--a8c-charts-color-trend-neutral, #707070)',
-			'var(--a8c-charts-color-trend-up, #008030)',
-		],
+		deltaColors: [ ...DELTA_POINTERS ],
 	},
 	conversionFunnelChart: {
-		backgroundColor: 'var(--a8c-charts-color-surface-secondary, #f4f4f4)',
-		positiveChangeColor: 'var(--a8c-charts-color-trend-up, #008030)',
-		negativeChangeColor: 'var(--a8c-charts-color-trend-down, #cc1818)',
+		backgroundColor: CATALOG_POINTERS.surfaceSecondary,
+		positiveChangeColor: CATALOG_POINTERS.trendUp,
+		negativeChangeColor: CATALOG_POINTERS.trendDown,
 	},
 	lineChart: {
 		lineStyles: {
