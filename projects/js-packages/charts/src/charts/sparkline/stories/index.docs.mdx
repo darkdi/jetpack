@@ -204,7 +204,7 @@ Everything else is set by wrapping your chart in `GlobalChartsProvider` and pass
 	language="tsx"
 	code={ `import { GlobalChartsProvider, Sparkline, type ChartTheme } from '@automattic/charts';
 
-	const customTheme: ChartTheme = {
+	const customTheme: Partial< ChartTheme > = {
 		sparkline: { strokeWidth: 2 },
 	};
 

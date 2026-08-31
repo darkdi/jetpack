@@ -136,6 +136,10 @@ $focus-ring-width: var(--wpds-border-width-focus, var(--wp-admin-border-width-fo
 	color: var(--a8c-charts-color-label-inverse);
 }
 
+.heatmap-chart__legend-label {
+	color: var(--a8c-charts-color-label);
+}
+
 .heatmap-chart__legend-swatch {
 	width: var(--wpds-dimension-size-3xs, 12px);
 	height: var(--wpds-dimension-size-3xs, 12px);

@@ -25,7 +25,11 @@ export const HeatmapLegend: FC< HeatmapLegendProps > = ( { steps = 5, lessLabel,
 
 	return (
 		<Stack direction="row" gap="xs" align="center">
-			<Text variant="body-sm" style={ labelStyle }>
+			<Text
+				variant="body-sm"
+				className={ styles[ 'heatmap-chart__legend-label' ] }
+				style={ labelStyle }
+			>
 				{ lessLabel ?? __( 'Less', 'jetpack-charts' ) }
 			</Text>
 			<Stack direction="row" gap="xs">
@@ -47,7 +51,11 @@ export const HeatmapLegend: FC< HeatmapLegendProps > = ( { steps = 5, lessLabel,
 					);
 				} ) }
 			</Stack>
-			<Text variant="body-sm" style={ labelStyle }>
+			<Text
+				variant="body-sm"
+				className={ styles[ 'heatmap-chart__legend-label' ] }
+				style={ labelStyle }
+			>
 				{ moreLabel ?? __( 'More', 'jetpack-charts' ) }
 			</Text>
 		</Stack>
