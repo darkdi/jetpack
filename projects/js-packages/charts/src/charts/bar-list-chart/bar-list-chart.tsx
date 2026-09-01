@@ -300,7 +300,8 @@ const BarListChartInternal: FC< BarListChartProps > = ( {
 		<BarChartUnresponsive
 			orientation="horizontal"
 			gridVisibility={ 'none' }
-			// A bar list renders through `BarChart`, so its root carries `bar-chart` too. This is what lets a consumer reach a bar list without reaching every bar chart.
+			// The root carries `bar-chart` too, since a bar list renders through one. This class is
+			// how a consumer reaches a bar list without reaching every bar chart.
 			className={ clsx( 'bar-list-chart', className ) }
 			data={ tintedData }
 			width={ width }

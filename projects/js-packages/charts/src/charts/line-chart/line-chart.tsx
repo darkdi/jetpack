@@ -194,7 +194,8 @@ const LineChartInternal = forwardRef< ChartInstanceRef, LineChartProps >(
 		const legendPosition = legend.position ?? 'bottom';
 
 		const theme = useXYChartTheme( data );
-		// A gradient stop reads its color as a string rather than painting it, so this one has to be resolved. `useXYChartTheme` already did, against the chart's scope element, so read it back rather than paying another getComputedStyle on every render.
+		// A gradient stop reads its color as a string, so it has to be resolved. Read back what
+		// `useXYChartTheme` already resolved rather than paying another getComputedStyle per render.
 		const resolvedBackgroundColor = theme.backgroundColor;
 		const chartId = useChartId( providedChartId );
 		const hiddenSeries = useDefaultHiddenSeries( chartId, defaultHiddenSeries );

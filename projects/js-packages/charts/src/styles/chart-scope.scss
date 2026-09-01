@@ -65,11 +65,9 @@
 	--a8c-charts-color-trend-down: var(--wpds-color-foreground-content-error-weak, #cc1818);
 	--a8c-charts-color-trend-neutral: var(--wpds-color-foreground-content-neutral-weak, #707070);
 	--a8c-charts-color-background: var(--wpds-color-background-surface-neutral-strong, #fff);
-	// Surfaces that float over the chart — tooltips, the annotation label, the
-	// zoom-reset control. Same WPDS token as --a8c-charts-color-background, and
-	// deliberately NOT derived from it: the chart's own background and the
-	// surfaces over it are set apart from each other often enough that one has
-	// to be able to move without the other. Sibling, not child.
+	// Surfaces floating over the chart — tooltips, the annotation label, the
+	// zoom-reset control. Same WPDS token as --a8c-charts-color-background but
+	// deliberately not derived from it, so either can move without the other.
 	--a8c-charts-color-surface: var(--wpds-color-background-surface-neutral-strong, #fff);
 	--a8c-charts-color-surface-secondary: var(--wpds-color-background-surface-neutral-weak, #f4f4f4);
 	--a8c-charts-color-track: var(--wpds-color-background-track-neutral-weak, #f0f0f0);

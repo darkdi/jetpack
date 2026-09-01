@@ -28,7 +28,7 @@ describe( 'catalog pointers', () => {
 		expect( varStrings.every( value => value.startsWith( 'var(--a8c-charts-' ) ) ).toBe( true );
 	} );
 
-	// The palette slots past the first are the exception, below: a terminal literal there would be a color nobody chose.
+	// Palette slots past the first are the exception: a literal there would be a color nobody chose.
 	it( 'gives every pointer a terminal literal for the SSR and jsdom paths', () => {
 		const varStrings = pointerStrings
 			.filter( value => value.startsWith( 'var(--a8c-charts-' ) )
@@ -37,7 +37,6 @@ describe( 'catalog pointers', () => {
 		expect( varStrings.every( value => value.includes( ',' ) ) ).toBe( true );
 	} );
 
-	// Only slot 1 seeds a palette. The rest resolve to nothing until a consumer sets them, and the provider drops what resolves to nothing, so the palette compacts instead of repeating one color.
 	it( 'leaves the palette slots past the first with no default of their own', () => {
 		expect( CATALOG_POINTERS.series ).toEqual( [
 			'var(--a8c-charts-color-series-1, #3858e9)',

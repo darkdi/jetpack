@@ -10,7 +10,8 @@ import type { SeriesData } from '../../../types';
 import type { GlobalChartsContextValue } from '../types';
 
 describe( 'ChartContext', () => {
-	// The palette is set the way a consumer sets it, by declaring the roles. On `body` rather than the document root, so the palette-resolution suite below can mount outside it and start from an undeclared palette.
+	// On `body` rather than the document root, so the palette-resolution suite below can mount
+	// outside it and start from an undeclared palette.
 	const PALETTE = [ '#ff0000', '#00ff00', '#0000ff' ];
 
 	const setPaletteRoles = ( element: HTMLElement, colors: readonly string[] ) =>
@@ -784,7 +785,6 @@ describe( 'ChartContext', () => {
 			expect( afterRerenderColor ).toBe( initialColor );
 		} );
 
-		// A provider reads the roles at its own wrapper, so two providers under different declarations get different palettes — including the generated colors, which derive from the seeds.
 		it( 'takes its palette from the roles in scope at its wrapper', () => {
 			let contextValue: GlobalChartsContextValue;
 
@@ -1926,8 +1926,6 @@ describe( 'ChartContext', () => {
 				expect( colorAt( 2 ) ).toBe( '#0000ff' );
 			} );
 
-			// The declaration nearest the provider's wrapper wins, which is what makes an override set
-			// inside the provider tree reach the palette while one set further out still applies.
 			it( 'reads the declaration closest to the wrapper', () => {
 				const outer = document.createElement( 'div' );
 				setPaletteRoles( outer, [ '#ff0000' ] );
@@ -1948,9 +1946,7 @@ describe( 'ChartContext', () => {
 		} );
 
 		describe( 'Gaps in the palette', () => {
-			// Slots past the first carry no default, so an unset one resolves to nothing and is dropped
-			// rather than repeating a color. Setting 1 and 3 gives a two-color palette, not a three-color
-			// one with a hole.
+			// Setting 1 and 3 gives a two-color palette, not a three-color one with a hole.
 			it( 'compacts over a slot that resolves to nothing', () => {
 				renderWithSlots( [ '#ff0000', undefined, '#0000ff' ] );
 
@@ -1958,8 +1954,6 @@ describe( 'ChartContext', () => {
 				expect( colorAt( 1 ) ).toBe( '#0000ff' );
 			} );
 
-			// Slot 1 is the only one with a terminal literal, and it is what the palette falls back to
-			// where nothing is declared and where `getComputedStyle` answers nothing at all.
 			it( 'falls back to the slot 1 seed when no role is declared', () => {
 				renderWithSlots( [] );
 
@@ -1996,8 +1990,6 @@ describe( 'ChartContext', () => {
 		} );
 
 		describe( 'Error Handling', () => {
-			// A value that is not a color still reaches the palette; it just contributes no hue, so the
-			// generated colors past the seeds derive from whatever else resolved.
 			it( 'keeps an unparseable value without crashing', () => {
 				expect( () => renderWithSlots( [ '#invalid', '#ff0000' ] ) ).not.toThrow();
 
@@ -2043,8 +2035,7 @@ describe( 'ChartContext', () => {
 		} );
 
 		describe( 'Server-Side Rendering', () => {
-			// Where `getComputedStyle` answers nothing, slot 1's terminal literal is the palette's only
-			// carrier — which is why it is the one slot that has one.
+			// Slot 1's terminal literal is the palette's only carrier under SSR.
 			it( 'falls back to the seed when getComputedStyle is unavailable', () => {
 				window.getComputedStyle = jest.fn( () => {
 					throw new Error( 'window is not defined' );

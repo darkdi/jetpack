@@ -18,16 +18,16 @@ export const useXYChartTheme = ( data: SeriesData[] ) => {
 	);
 
 	return useMemo( () => {
-		// Only what is read as a string is resolved here — the palette and `backgroundColor` — plus `htmlLabel.color` below, which is painted outside the scope. Resolving against the chart's own scope element, never :root, is what reads an override set inside the provider tree.
-		//
-		// One resolver per theme build, so all three share a single getComputedStyle call.
+		// Only what is read as a string is resolved: the palette, `backgroundColor`, `htmlLabel.color`.
+		// At the chart's scope element, never :root, so an override inside the provider tree is seen.
+		// One resolver for all three, so they share a single getComputedStyle call.
 		const resolve = createCssVariableResolver( scopeElement );
 		const resolveColor = ( value?: string ): string | undefined =>
 			value ? resolve( value ) ?? value : value;
 
 		const seriesColors: string[] = JSON.parse( seriesColorKey );
 
-		// visx uses this array as the default stroke for a series with none of its own, so an unresolved entry paints nothing. Slots past the first resolve to nothing until a consumer sets them, and are dropped so the scale compacts rather than repeating a color.
+		// visx uses this as the default stroke for a series without one, so an unresolved entry paints nothing.
 		const paletteColors = [ ...seriesColors, ...CATALOG_POINTERS.series ]
 			.map( color => resolveColor( color ) )
 			.filter( ( color ): color is string => Boolean( color ) && ! color.includes( 'var(' ) );
@@ -35,7 +35,8 @@ export const useXYChartTheme = ( data: SeriesData[] ) => {
 		// The tooltip is painted in a portal outside the scope, and visx concatenates this color into a `box-shadow` where a chain cannot take a suffix; see TOKENS.md#the-svg-bridge. Passing it explicitly leaves `svgLabelSmall.fill`, which visx derives it from, a chain for the SVG tick labels.
 		const htmlLabelColor = resolveColor( CATALOG_POINTERS.labelAxis );
 
-		// `gridColor` and `gridColorDark` are visx's fallbacks for whichever of the four axis and grid style objects it is not given. All four are supplied, so the pair reaches nothing; it stays because the config type requires it.
+		// visx's fallbacks for whichever axis or grid style object it is not given. All four are
+		// supplied, so these reach nothing; they stay because the config type requires them.
 		return buildChartTheme( {
 			...theme,
 			gridColor: '',

@@ -1,12 +1,8 @@
 import { SERIES_PALETTE_POINTERS } from './series-palette';
 
 /*
- * The `var()` chain for each color JS has to hand to something — an SVG attribute visx or our own
- * JSX writes, or a custom property fed to a `color-mix`. The chain lands on the element and
- * resolves there; nothing here is resolved in JS. The terminal literal covers SSR and jsdom.
- *
- * A color an ordinary element can take from a stylesheet belongs in that component's
- * `.module.scss`, not here.
+ * The `var()` chain for each color JS has to hand to something. Nothing here is resolved in JS —
+ * the chain lands on the element; the terminal literal covers SSR and jsdom. See TOKENS.md.
  */
 export const CATALOG_POINTERS = {
 	background: 'var(--a8c-charts-color-background, #fff)',
@@ -22,7 +18,7 @@ export const CATALOG_POINTERS = {
 	annotation: 'var(--a8c-charts-color-annotation, #1e1e1e)',
 	surface: 'var(--a8c-charts-color-surface, #fff)',
 	surfaceSecondary: 'var(--a8c-charts-color-surface-secondary, #f4f4f4)',
-	// Only for `ConversionFunnelChart`'s `renderMainMetric`, which hands a consumer's own markup something to paint with.
+	// Only for `renderMainMetric`, which hands a consumer's own markup something to paint with.
 	trendUp: 'var(--a8c-charts-color-trend-up, #008030)',
 	trendDown: 'var(--a8c-charts-color-trend-down, #cc1818)',
 	series: SERIES_PALETTE_POINTERS,

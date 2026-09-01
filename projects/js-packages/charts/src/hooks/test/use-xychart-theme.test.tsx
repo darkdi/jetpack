@@ -23,7 +23,7 @@ describe( 'useXYChartTheme', () => {
 		document.body.removeChild( scope );
 	} );
 
-	// jsdom does not compute `var()`, so what the pointer resolves *to* is covered in Storybook. This pins that the chain survives the theme build intact — resolving it here would freeze it.
+	// jsdom does not compute `var()`, so what a pointer resolves *to* is covered in Storybook.
 	it( 'hands visx the catalog pointer for paint-only colors rather than a resolved value', () => {
 		const scope = document.createElement( 'div' );
 		document.body.appendChild( scope );
