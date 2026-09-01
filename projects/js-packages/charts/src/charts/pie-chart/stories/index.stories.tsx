@@ -350,7 +350,7 @@ export const CustomLabelColors: Story = {
 - **Custom segment colors**: bright colors that would make default dark text hard to read
 - **Opt-in enhancement**: the plate appears only once you set its role
 
-The controls below drive the \`labelTextColor\` and \`labelBackgroundColor\` theme props, which are deprecated. Declare the two roles in CSS instead — a declaration anywhere inside the provider tree beats either prop.`,
+The controls below set the two roles on a wrapper around the chart, which is how a consumer declares them.`,
 			},
 		},
 	},

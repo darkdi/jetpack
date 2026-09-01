@@ -185,7 +185,7 @@ The `theme` prop carries no colors at all; `TOKENS.md` maps every removed field 
 
 Themes are merged with the default theme, so you only need to specify the properties you want to customize.
 
-A field you leave out doesn't fall back to a separate JS default value — it falls through to the catalog default, because `defaultTheme` holds a `--a8c-charts-*` pointer for every color rather than a literal. Omitting a color is therefore how you opt into design-system theming, not how you opt out of theming.
+Colors are not part of that merge at all — they reach a chart through the catalog, so leaving the `theme` prop off entirely still gives a chart the design system's colors.
 
 ### CSS Custom Property Overrides
 
