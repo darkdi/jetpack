@@ -7,4 +7,6 @@ Remove `gridColor` and `gridColorDark`, which were undocumented visx passthrough
 
 Rename `--a8c-charts-color-axis` to `--a8c-charts-color-axis-x` and `--a8c-charts-color-tick` to `--a8c-charts-color-tick-x`. Both only ever painted the x axis; now that the y axis has roles of its own, the names say which one they move.
 
-Add `leaderboard-chart` and `conversion-funnel-chart` classes to those charts' roots, matching the `bar-chart`, `line-chart` and `pie-chart` classes the other charts already carry. They give a consumer somewhere to scope a role to one chart, which matters for a role more than one chart reads — `--a8c-charts-color-surface-secondary` paints the funnel's track and `GeoChart`'s dataless regions, and the trend pair paints the funnel's change indicator and the leaderboard's deltas.
+Add `leaderboard-chart`, `conversion-funnel-chart` and `bar-list-chart` classes to those charts' roots, and add the `pie-semi-circle-chart` class to that chart's error state, which was missing it. This matches the `bar-chart`, `line-chart` and `pie-chart` classes the other charts already carry, and gives a consumer somewhere to scope a role to one chart — which matters for a role more than one chart reads, since `--a8c-charts-color-surface-secondary` paints the funnel's track and `GeoChart`'s dataless regions, and the trend pair paints the funnel's change indicator and the leaderboard's deltas.
+
+`BarListChart` and `PieSemiCircleChart`'s error state now also pass a caller's own `className` through, which they previously dropped.
