@@ -69,6 +69,39 @@ class WPCOM_WPAdmin_Page_View_Test extends TestCase {
 	}
 
 	/**
+	 * The event carries no other props, so dropping blog_id silently makes every row unattributable to a site.
+	 *
+	 * @runInSeparateProcess
+	 * @preserveGlobalState disabled
+	 */
+	#[RunInSeparateProcess]
+	#[PreserveGlobalState( false )]
+	public function test_wpcom_track_customizer_from_frontend_sends_blog_id() {
+		define( 'IS_WPCOM', true );
+		define( 'WP_NETWORK_ADMIN', false );
+
+		Functions\stubs(
+			array(
+				'is_automattician' => false,
+			)
+		);
+
+		$GLOBALS['current_user'] = (object) array(
+			'ID'         => 7,
+			'user_login' => 'example',
+		);
+
+		ob_start();
+		wpcom_track_customizer_from_frontend();
+		$output = ob_get_clean();
+
+		$this->assertMatchesRegularExpression(
+			"/'wpcom_customize_loaded_from_frontend', \{ blog_id: '[1-9][0-9]*' \}/",
+			$output
+		);
+	}
+
+	/**
 	 * Data provider for test_wpcom_nosara_track_admin_page_views_does_not_track_a11ns.
 	 *
 	 * @return array
