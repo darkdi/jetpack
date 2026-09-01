@@ -7,6 +7,7 @@ export {
 	formatDateRangeCompact,
 	formatDateRangeMinimal,
 	formatDateRangeLong,
+	intlLocale,
 	type DateFormatName,
 } from './date';
 export { formatMetricValue } from './metric';
