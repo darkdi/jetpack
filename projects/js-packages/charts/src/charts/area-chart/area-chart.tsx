@@ -70,8 +70,7 @@ const AreaChartInternal = forwardRef< ChartInstanceRef, AreaChartProps >(
 			onPointerMove,
 			onPointerOut,
 			zoomable = false,
-			rescaleYOnVisibilityChange,
-			rescaleYOnLegendToggle,
+			rescaleYOnVisibilityChange = true,
 			defaultHiddenSeries,
 			children,
 			gridVisibility,
@@ -82,9 +81,6 @@ const AreaChartInternal = forwardRef< ChartInstanceRef, AreaChartProps >(
 		const legendInteractive = legend.interactive ?? false;
 		const legendShape = legend.shape ?? 'rect';
 		const legendPosition = legend.position ?? 'bottom';
-
-		// New prop wins; fall back to the deprecated `rescaleYOnLegendToggle`; default to rescaling.
-		const rescaleYOnVisibility = rescaleYOnVisibilityChange ?? rescaleYOnLegendToggle ?? true;
 
 		const theme = useXYChartTheme( data );
 		const chartId = useChartId( providedChartId );
@@ -158,7 +154,7 @@ const AreaChartInternal = forwardRef< ChartInstanceRef, AreaChartProps >(
 		// around zero); letting visx derive the domain is correct there.
 		const fixedYDomain = useMemo< [ number, number ] | undefined >( () => {
 			if (
-				rescaleYOnVisibility ||
+				rescaleYOnVisibilityChange ||
 				! dataSorted.length ||
 				! dataSorted[ 0 ].data.length ||
 				( stacked && stackOffset !== 'none' )
@@ -200,7 +196,7 @@ const AreaChartInternal = forwardRef< ChartInstanceRef, AreaChartProps >(
 			}
 			if ( max === -Infinity ) return undefined;
 			return [ Math.min( 0, min ), max ];
-		}, [ dataSorted, stacked, stackOffset, rescaleYOnVisibility ] );
+		}, [ dataSorted, stacked, stackOffset, rescaleYOnVisibilityChange ] );
 
 		const chartOptions = useMemo( () => {
 			const { tickResolution, tickFormat, ...xAxisOptions } = options?.axis?.x ?? {};
