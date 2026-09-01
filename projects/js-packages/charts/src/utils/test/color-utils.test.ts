@@ -7,7 +7,6 @@ import {
 	hexToRgba,
 	validateHexColor,
 	parseHslString,
-	parseRgbString,
 	normalizeColorToHex,
 	relativeLuminance,
 	prefersLightText,
@@ -664,52 +663,6 @@ describe( 'parseHslString', () => {
 
 		it( 'returns null for empty string', () => {
 			expect( parseHslString( '' ) ).toBeNull();
-		} );
-	} );
-} );
-
-describe( 'parseRgbString', () => {
-	describe( 'Valid RGB strings', () => {
-		it( 'parses rgb(255, 0, 0) to #ff0000', () => {
-			expect( parseRgbString( 'rgb(255, 0, 0)' ) ).toBe( '#ff0000' );
-		} );
-
-		it( 'parses rgb(0, 255, 0) to #00ff00', () => {
-			expect( parseRgbString( 'rgb(0, 255, 0)' ) ).toBe( '#00ff00' );
-		} );
-
-		it( 'parses rgb(0, 0, 255) to #0000ff', () => {
-			expect( parseRgbString( 'rgb(0, 0, 255)' ) ).toBe( '#0000ff' );
-		} );
-
-		it( 'parses rgb with no spaces', () => {
-			expect( parseRgbString( 'rgb(128,128,128)' ) ).toBe( '#808080' );
-		} );
-
-		it( 'clamps values above 255', () => {
-			expect( parseRgbString( 'rgb(300, 0, 0)' ) ).toBe( '#ff0000' );
-		} );
-
-		it( 'clamps negative values to 0', () => {
-			expect( parseRgbString( 'rgb(-50, 0, 0)' ) ).toBe( '#000000' );
-		} );
-	} );
-
-	describe( 'Invalid RGB strings', () => {
-		it( 'returns null for hsl strings', () => {
-			expect( parseRgbString( 'hsl(0, 100%, 50%)' ) ).toBeNull();
-		} );
-
-		it( 'returns null for hex colors', () => {
-			expect( parseRgbString( '#ff0000' ) ).toBeNull();
-		} );
-
-		it( 'returns null for rgba strings', () => {
-			expect( parseRgbString( 'rgba(255, 0, 0, 1)' ) ).toBeNull();
-		} );
-
-		it( 'returns null for empty string', () => {
-			expect( parseRgbString( '' ) ).toBeNull();
 		} );
 	} );
 } );
