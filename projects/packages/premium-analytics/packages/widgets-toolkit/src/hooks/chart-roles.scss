@@ -2,10 +2,16 @@
 .a8c-charts-scope {
 	--a8c-charts-color-label-background: var(--wpds-color-background-interactive-neutral-weak);
 	--a8c-charts-color-label-on-fill: var(--wpds-color-foreground-interactive-neutral-strong);
-	--a8c-charts-color-surface-secondary: var(--wpds-color-background-surface-brand);
 
 	// The axis line alone carries the scale.
 	--a8c-charts-color-tick-x: none;
+}
+
+// Scoped to their charts: both roles are read by more than the chart that
+// wants them moved. GeoChart fills its dataless regions from the surface
+// role, and the funnel's change indicator reads the leaderboard's trend pair.
+.conversion-funnel-chart {
+	--a8c-charts-color-surface-secondary: var(--wpds-color-background-surface-brand);
 }
 
 .leaderboard-chart {

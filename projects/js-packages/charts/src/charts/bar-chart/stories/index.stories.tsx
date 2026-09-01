@@ -704,11 +704,11 @@ export const ComparisonMulti: Story = {
 export const PaintedYAxis: Story = {
 	args: {
 		containerWidth: '900px',
-		containerHeight: '340px',
+		containerHeight: '400px',
 		resize: 'none',
 	},
 	render: () => (
-		<div style={ { display: 'grid', gap: '32px', gridTemplateColumns: 'repeat(2, auto)' } }>
+		<div style={ { display: 'grid', gap: '32px', gridTemplateColumns: 'repeat(2, 380px)' } }>
 			<div>
 				<h3 style={ { marginBottom: '4px' } }>Default — labels only</h3>
 				<p style={ { marginBottom: '12px', color: '#666' } }>
@@ -730,9 +730,7 @@ export const PaintedYAxis: Story = {
 				}
 			>
 				<h3 style={ { marginBottom: '4px' } }>Painted</h3>
-				<p style={ { marginBottom: '12px', color: '#666' } }>
-					<code>--a8c-charts-color-axis-y</code> blue, <code>--a8c-charts-color-tick-y</code> red.
-				</p>
+				<p style={ { marginBottom: '12px', color: '#666' } }>Axis blue, tick marks red.</p>
 				<BarChart
 					width={ 380 }
 					height={ 220 }

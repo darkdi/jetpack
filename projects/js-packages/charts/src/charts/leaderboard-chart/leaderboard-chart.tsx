@@ -26,15 +26,15 @@ import styles from './leaderboard-chart.module.scss';
 import type { LeaderboardChartProps } from './types';
 import type { LeaderboardEntry } from '../../types';
 
+/** Indexed by `Math.sign( delta ) + 1`, so [negative, neutral, positive]. */
+const DELTA_TREND_CLASS = [ 'deltaValue--down', 'deltaValue--neutral', 'deltaValue--up' ] as const;
+
 /**
  * Default value formatter using formatMetricValue
  *
  * @param value - The numeric value to format
  * @return Formatted string representation of the value
  */
-/** Indexed by `Math.sign( delta ) + 1`, so [negative, neutral, positive]. */
-const DELTA_TREND_CLASS = [ 'deltaValue--down', 'deltaValue--neutral', 'deltaValue--up' ] as const;
-
 const defaultValueFormatter = ( value: number ): string => {
 	return formatMetricValue( value, 'number', {
 		useMultipliers: true,

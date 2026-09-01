@@ -315,6 +315,7 @@ const ConversionFunnelChartInternal: FC< ConversionFunnelChartProps > = ( {
 				data-testid="conversion-funnel-chart"
 				ref={ setScopeNode }
 				className={ clsx(
+					'conversion-funnel-chart',
 					styles[ 'conversion-funnel-chart' ],
 					loading && styles[ 'conversion-funnel-chart--loading' ],
 					className
@@ -339,6 +340,7 @@ const ConversionFunnelChartInternal: FC< ConversionFunnelChartProps > = ( {
 				data-testid="conversion-funnel-chart"
 				ref={ setChartRef }
 				className={ clsx(
+					'conversion-funnel-chart',
 					styles[ 'conversion-funnel-chart' ],
 					loading && styles[ 'conversion-funnel-chart--loading' ],
 					className

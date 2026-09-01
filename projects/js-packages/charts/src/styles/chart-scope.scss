@@ -45,9 +45,6 @@
 	// rather than `transparent` keeps the line out of hit-testing too.
 	--a8c-charts-color-axis-y: none;
 	--a8c-charts-color-tick-y: none;
-	// A role a `fill` reads needs a terminal literal even to paint nothing: a
-	// fallback-less var() naming an undeclared property drops the declaration, and
-	// `fill` then starts at black. `stroke` starts at `none`.
 	--a8c-charts-color-label: var(--wpds-color-foreground-content-neutral, #1e1e1e);
 	--a8c-charts-color-label-secondary: var(--wpds-color-foreground-content-neutral-weak, #707070);
 	--a8c-charts-color-label-inverse: var(--wpds-color-foreground-interactive-neutral-strong, #f0f0f0);
@@ -56,6 +53,8 @@
 	--a8c-charts-color-label-on-fill: #fff;
 	// The plate behind a pie-slice label. Transparent by default, so a label
 	// reads straight off the slice; there is no WPDS token for "no surface".
+	// The literal is load-bearing: a `fill` reading a fallback-less var() on an
+	// undeclared property drops the declaration and paints black instead.
 	--a8c-charts-color-label-background: transparent;
 	// The SVG axis and tick labels. Narrower than --a8c-charts-color-label and
 	// derived from it, so setting the broad role moves every label at once while
