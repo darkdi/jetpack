@@ -18,7 +18,6 @@ import {
 	useGlobalChartsTheme,
 	GlobalChartsContext,
 } from '../../providers';
-import { CATALOG_POINTERS } from '../../providers/chart-context/private/catalog-pointers';
 import { CHART_SCOPE_CLASS } from '../../styles/chart-scope-class';
 import { attachSubComponents, resolveFontSize } from '../../utils';
 import { getStringWidth } from '../../visx/text';
@@ -451,22 +450,21 @@ const PieChartInternal = ( {
 															<path { ...pathProps } />
 															{ showLabels && hasSpaceForLabel && (
 																<g>
-																	{ /* The plate behind the label. Its role defaults to `transparent`, so by default this paints nothing and the label reads straight off the slice. */ }
 																	<rect
+																		className={ styles[ 'pie-chart__label-plate' ] }
 																		x={ centroidX - backgroundWidth / 2 }
 																		y={ centroidY - backgroundHeight / 2 }
 																		width={ backgroundWidth }
 																		height={ backgroundHeight }
-																		fill={ CATALOG_POINTERS.labelBackground }
 																		rx={ 4 }
 																		ry={ 4 }
 																		pointerEvents="none"
 																	/>
 																	<text
+																		className={ styles[ 'pie-chart__label-text' ] }
 																		x={ centroidX }
 																		y={ centroidY }
 																		dy=".33em"
-																		fill={ CATALOG_POINTERS.labelOnFill }
 																		fontSize={ fontSize }
 																		textAnchor="middle"
 																		pointerEvents="none"

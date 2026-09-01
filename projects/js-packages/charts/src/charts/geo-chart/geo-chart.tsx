@@ -301,7 +301,7 @@ const GeoChartInternal: FC< GeoChartProps > = ( {
 			ref={ containerRef }
 			className={ clsx( 'geo-chart', styles.container, className ) }
 			data-testid="geo-chart"
-			style={ { width, height, backgroundColor: CATALOG_POINTERS.background } }
+			style={ { width, height } }
 		>
 			<Chart
 				chartType="GeoChart"

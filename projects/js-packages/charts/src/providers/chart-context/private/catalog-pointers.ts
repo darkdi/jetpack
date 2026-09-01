@@ -6,8 +6,6 @@ import { SERIES_PALETTE_POINTERS } from './series-palette';
  */
 export const CATALOG_POINTERS = {
 	background: 'var(--a8c-charts-color-background, #fff)',
-	labelBackground: 'var(--a8c-charts-color-label-background, transparent)',
-	labelOnFill: 'var(--a8c-charts-color-label-on-fill, #FFFFFF)',
 	labelAxis: 'var(--a8c-charts-color-label-axis, #1e1e1e)',
 	grid: 'var(--a8c-charts-color-grid, #dbdbdb)',
 	// The y pair resolves to `none`: that axis carries labels only until a consumer declares them.

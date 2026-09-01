@@ -26,6 +26,9 @@ $focus-ring-width: var(--wpds-border-width-focus, var(--wp-admin-border-width-fo
 // count. ARIA rows are `display: contents` so their cells join this grid.
 .heatmap-chart__grid {
 	display: grid;
+	// The blend reads this alias rather than the role, so a chart-level
+	// override substitutes where the JS contrast decision reads it.
+	--a8c-charts-color-heatmap-background: var(--a8c-charts-color-background, #fff);
 	// --a8c-charts-dimension-heatmap-cell-gap is component-emitted from JS per
 	// render, not a catalog entry. Do not collapse this to a bare var(); the
 	// inner WPDS fallback is the only value this property has when the JS var
@@ -141,6 +144,8 @@ $focus-ring-width: var(--wpds-border-width-focus, var(--wp-admin-border-width-fo
 }
 
 .heatmap-chart__legend-swatch {
+	--a8c-charts-color-heatmap-background: var(--a8c-charts-color-background, #fff);
+
 	width: var(--wpds-dimension-size-3xs, 12px);
 	height: var(--wpds-dimension-size-3xs, 12px);
 	border-radius: var(--a8c-charts-border-radius-cell);

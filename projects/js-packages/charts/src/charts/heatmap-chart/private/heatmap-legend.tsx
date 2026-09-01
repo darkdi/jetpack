@@ -2,7 +2,6 @@ import { __ } from '@wordpress/i18n';
 import { Stack, Text } from '@wordpress/ui';
 import { useContext } from 'react';
 import { useGlobalChartsTheme } from '../../../providers';
-import { CATALOG_POINTERS } from '../../../providers/chart-context/private/catalog-pointers';
 import styles from '../heatmap-chart.module.scss';
 import { HeatmapContext } from './heatmap-context';
 import type { CSSProperties, FC } from 'react';
@@ -43,7 +42,6 @@ export const HeatmapLegend: FC< HeatmapLegendProps > = ( { steps = 5, lessLabel,
 							style={
 								{
 									'--a8c-charts-color-heatmap-primary': primaryColorHex,
-									'--a8c-charts-color-heatmap-background': CATALOG_POINTERS.background,
 									'--a8c-charts-heatmap-cell-intensity': intensity,
 								} as CSSProperties
 							}
