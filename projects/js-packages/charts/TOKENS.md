@@ -168,7 +168,7 @@ The heatmap Tier-2 variables and `--a8c-charts-dimension-leaderboard-bar-hover-i
 
 ## Removed override variables
 
-Every role in the catalog is a supported override point, on the precedence rules above. These names are not, and no longer resolve — set the replacement instead:
+These names no longer resolve. Set the replacement instead:
 
 | Removed | Set instead |
 |---|---|
@@ -177,5 +177,3 @@ Every role in the catalog is a supported override point, on the precedence rules
 | `--charts-trend-neutral-color` | `--a8c-charts-color-trend-neutral` |
 | `--a8c--charts--leaderboard--bar--border-radius` | `--a8c-charts-border-radius-leaderboard-bar` |
 | `--a8c-charts-color-focus` | `--wpds-color-stroke-focus` |
-
-Removing the first four also removes a second name for a role, read at its component's own call site rather than through the catalog: each sat inside the role as its fallback — `var(--a8c-charts-*, var(--deprecated-name, …))` — so it applied only where the role itself was unset. No `--a8c-charts-*` role is now read anywhere but bare.
